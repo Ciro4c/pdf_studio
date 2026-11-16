@@ -1,0 +1,1825 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PDF Studio — công cụ PDF ngay trên trình duyệt</title>
+<style>
+:root{--bg:#f5f6f8;--card:#fff;--tx:#1b2130;--mut:#667085;--line:#e2e5eb;--pri:#1f5fd1;--pri2:#e8f0fe;--err:#b42318;--ok:#067647;--warn:#9a6700;--side:#fff}
+@media (prefers-color-scheme:dark){:root{--bg:#12151b;--card:#1b1f27;--tx:#e8ebf1;--mut:#9aa3b2;--line:#2b313c;--pri:#6ea0ff;--pri2:#1e2a42;--err:#ff8a80;--ok:#6ee7a8;--warn:#f2c14e;--side:#171a21}}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,"Segoe UI",Roboto,sans-serif}
+.app{display:flex;min-height:100%}
+aside{width:260px;flex:none;background:var(--side);border-right:1px solid var(--line);padding:14px 10px;overflow:auto;position:sticky;top:0;height:100vh}
+.brand{font-weight:700;font-size:18px;padding:4px 10px 10px}
+.grp{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);padding:12px 10px 4px}
+#nav button{display:block;width:100%;text-align:left;border:0;background:none;color:var(--tx);padding:7px 10px;border-radius:8px;cursor:pointer;font:inherit}
+#nav button:hover{background:var(--pri2)}#nav button.on{background:var(--pri);color:#fff}
+details.fonts{margin:16px 6px 0;font-size:13px;color:var(--mut)}details.fonts summary{cursor:pointer}details.fonts label{display:block;margin-top:8px}
+.foot{margin:16px 10px 0;font-size:12px;color:var(--mut)}
+main{flex:1;min-width:0;padding:20px;max-width:1000px}
+#panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+h2{margin:0 0 4px;font-size:19px}h3{margin:18px 0 6px;font-size:15px}.hint{color:var(--mut);font-size:13px;margin:0 0 12px}
+.drop{border:2px dashed var(--line);border-radius:10px;padding:18px;text-align:center;color:var(--mut);cursor:pointer}.drop small{display:block}.drop.over,.drop:hover{border-color:var(--pri);background:var(--pri2)}
+.flist{margin-top:8px}.fitem{display:flex;gap:8px;align-items:center;padding:4px 8px;border:1px solid var(--line);border-radius:8px;margin-top:4px}.fname{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.opts{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end;margin:12px 0}
+.opts label{display:flex;flex-direction:column;gap:3px;font-size:13px;color:var(--mut)}.opts label.chk,label.chk{flex-direction:row;align-items:center;gap:6px;color:var(--tx);font-size:14px}
+.opts small{color:var(--mut)}
+input[type=text],input[type=number],input[type=password],select,textarea{padding:7px 9px;border:1px solid var(--line);border-radius:7px;background:var(--bg);color:var(--tx);font:inherit;max-width:100%}
+button{font:inherit}button.act{background:var(--pri);color:#fff;border:0;padding:9px 16px;border-radius:8px;cursor:pointer}button.sec{background:transparent;color:var(--pri);border:1px solid var(--pri);padding:8px 14px;border-radius:8px;cursor:pointer}
+button:disabled{opacity:.5;cursor:wait}button.ico{border:1px solid var(--line);background:var(--card);color:var(--tx);border-radius:6px;padding:1px 7px;cursor:pointer}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+#statusrow{margin-top:12px}#bar{height:6px;background:var(--line);border-radius:4px;overflow:hidden;display:none}#bar i{display:block;height:100%;width:0;background:var(--pri);transition:width .15s}#status{font-size:13px;color:var(--mut);min-height:20px;margin-top:4px}
+#results{margin-top:8px}.rhead{display:flex;justify-content:space-between;align-items:center;font-weight:600;margin:12px 0 6px}
+.ritem{display:flex;gap:10px;align-items:center;padding:7px 10px;background:var(--card);border:1px solid var(--line);border-radius:8px;margin-top:5px;flex-wrap:wrap}.rname{flex:1;min-width:140px;word-break:break-all}.rsize{color:var(--mut);font-size:12px}.rnote{width:100%;font-size:12px;color:var(--warn)}
+.err{color:var(--err);margin-top:6px;font-size:14px}.note{background:var(--pri2);border-radius:8px;padding:8px 10px;margin-top:6px;font-size:14px}
+.box{max-height:380px;overflow:auto;border:1px solid var(--line);border-radius:8px;margin-top:10px}table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left}th{color:var(--mut);font-size:12px;font-weight:500;position:sticky;top:0;background:var(--card)}td input[type=text]{width:100%}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:12px}.thumb{border:1px solid var(--line);border-radius:8px;padding:6px;text-align:center}.thumb.del{opacity:.35}.tbox{height:150px;display:flex;align-items:center;justify-content:center;overflow:hidden}.tbox canvas{max-width:100%;max-height:100%;transition:transform .15s}.tlabel{font-size:12px;margin:4px 0}.tbtn{display:flex;gap:3px;justify-content:center;flex-wrap:wrap}
+.bmwrap{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-start}.bmtable{flex:1 1 520px;min-width:0}.prev{flex:0 0 230px}.prev canvas{max-width:100%;border:1px solid var(--line);border-radius:4px}.bmtools{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0;align-items:center}details.imp{margin-top:12px}details.imp summary{cursor:pointer;color:var(--pri)}details.imp textarea{margin-top:8px}
+.scan{margin-top:10px}.after{margin-top:6px}
+#banner{display:none;background:#fff4e5;color:#7a4b00;border:1px solid #ffd59a;border-radius:8px;padding:8px 12px;margin-bottom:12px;font-size:14px}
+@media (max-width:760px){.app{flex-direction:column}aside{width:auto;height:auto;position:static;border-right:0;border-bottom:1px solid var(--line)}#nav{display:flex;flex-wrap:wrap;gap:4px}.grp{width:100%}#nav button{width:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+  <div class="brand">PDF Studio</div>
+  <div id="nav"></div>
+  <details class="fonts"><summary>Cài đặt font tiếng Việt (PDF)</summary>
+    <p>Chữ tiếng Việt trong mục lục, watermark, đánh số trang, Word→PDF cần font Unicode. App tự tải font Tinos; nếu mạng chặn, chọn file .ttf trên máy (vd <code>C:\Windows\Fonts\times.ttf</code>).</p>
+    <label>Thường <input type="file" id="fontfile" accept=".ttf,.otf"></label>
+    <label>Đậm (tùy chọn) <input type="file" id="fontbold" accept=".ttf,.otf"></label><div id="fontinfo"></div>
+  </details>
+  <div class="foot">Mọi thao tác chạy ngay trong trình duyệt — file không được gửi đi đâu.</div>
+</aside>
+<main>
+  <div id="banner"></div>
+  <div id="panel"></div>
+  <div id="statusrow"><div id="bar"><i></i></div><div id="status"></div></div>
+  <div id="results"></div>
+</main>
+</div>
+<script>
+window.PS = {};
+PS.CDN = {
+  pdfjs: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@6.2.108/build/',
+  qpdf: 'https://cdn.jsdelivr.net/npm/@neslinesli93/qpdf-wasm@0.3.0/dist/',
+  fonts: ['https://cdn.jsdelivr.net/gh/google/fonts@2796410152d4f9524b68ed46e69c1b60f8e0f7c3/ofl/tinos/', 'https://raw.githubusercontent.com/google/fonts/2796410152d4f9524b68ed46e69c1b60f8e0f7c3/ofl/tinos/']
+};
+function loadScript(urls) {
+  return new Promise(function (res, rej) {
+    var i = 0;
+    (function next() {
+      if (i >= urls.length) return rej(new Error('Không tải được ' + urls[0]));
+      var s = document.createElement('script'); s.src = urls[i++]; s.onload = res; s.onerror = function () { s.remove(); next(); };
+      document.head.appendChild(s);
+    })();
+  });
+}
+PS.libsReady = Promise.all([
+  loadScript(['https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js', 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js']),
+  loadScript(['https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js', 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js'])
+]).then(function () {
+  return loadScript(['https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js', 'https://unpkg.com/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js']).catch(function () { /* không có fontkit: PDF sẽ dùng chữ không dấu */ });
+}).catch(function (e) {
+  var b = document.getElementById('banner'); b.style.display = 'block'; b.textContent = 'Không tải được thư viện cần thiết (' + e.message + '). Kiểm tra kết nối mạng rồi tải lại trang.'; throw e;
+});
+</script>
+<script>
+/* ===== 01-core: tiện ích, trích xuất chữ từ PDF, nhận diện heading, tạo Word ===== */
+(function () {
+const PS = (window.PS = window.PS || {});
+const NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"';
+
+PS.nfc = s => String(s).normalize('NFC');
+PS.normKey = s => PS.nfc(s).replace(/\s+/g, ' ').trim().toLowerCase();
+PS.stem = n => String(n).replace(/\.[^.\\/]+$/, '');
+PS.esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+PS.stripVN = s => PS.nfc(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+PS.safeName = (s, n = 60) => (String(s).replace(/[\\/:*?"<>|\r\n\t]+/g, ' ').trim().replace(/^\.+|\.+$/g, '').slice(0, n).trim() || 'phan');
+const median = a => { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+
+/* ---------------- nhận diện số thứ tự ---------------- */
+const PRIORITY = ['chuong', 'roman', 'muc', 'dieu', 'alpha', 'dec1', 'dec2', 'dec3', 'dec4', 'dec5'];
+const STRONG = new Set(['chuong', 'muc', 'dieu']);
+const SEP = '[\\s:.\\-–—]*', END = '(?![\\p{L}\\p{N}])';
+const RE = {
+  chuong: new RegExp('^(?:CHƯƠNG|Chương|PHẦN|Phần|CHAPTER|Chapter|PART|Part)\\s+(?:[IVXLC]+|\\d+)' + END + SEP, 'u'),
+  muc: new RegExp('^(?:MỤC|Mục|SECTION|Section)\\s+(?:\\d+|[IVXLC]+)' + END + SEP, 'u'),
+  dieu: new RegExp('^(?:ĐIỀU|Điều|ARTICLE|Article)\\s+\\d+[a-z]?' + END + SEP, 'u'),
+  dec: /^(\d{1,3}(?:\.\d{1,3}){0,4})[.)]?\s+/,
+  roman: /^((?:X{0,2})(?:IX|IV|V?I{0,3}))[.)]\s+/,
+  alpha: /^[A-ZĐ][.)]\s+/u,
+};
+const LIST_MARK = /^(?:[•●▪■□◦\-–—+*]\s+|\(?\d{1,2}[.)]\s+|\(?[a-zđ]\)\s+)/u;
+const PAGE_NO = /^(?:trang|page)?\s*\d{1,4}(?:\s*\/\s*\d{1,4})?$/i;
+const LEADER = /(?:\.\s?){4,}/;
+
+function matchNumbering(t) {
+  let m;
+  for (const f of ['chuong', 'muc', 'dieu']) if ((m = RE[f].exec(t))) return [f, m[0].length];
+  if ((m = RE.dec.exec(t))) return ['dec' + Math.min((m[1].match(/\./g) || []).length + 1, 5), m[0].length];
+  if ((m = RE.roman.exec(t)) && m[1]) return ['roman', m[0].length];
+  if ((m = RE.alpha.exec(t))) return ['alpha', m[0].length];
+  return [null, 0];
+}
+PS.matchNumbering = matchNumbering;
+PS.stripLeadingNumber = t => { const [f, n] = matchNumbering(t); return f && t.slice(n).trim() ? t.slice(n).trim() : t.trim(); };
+
+/* ---------------- phát hiện heading ---------------- */
+function findNoise(lines) {
+  const npages = new Set(lines.map(l => l.page)).size, cnt = new Map(), margin = [];
+  lines.forEach((l, i) => {
+    if (!l.page_h) return;
+    if (l.y0 < 0.09 * l.page_h || l.y0 > 0.91 * l.page_h) {
+      margin.push(i);
+      const k = PS.normKey(l.text).replace(/\d+/g, '#');
+      if (!cnt.has(k)) cnt.set(k, new Set());
+      cnt.get(k).add(l.page);
+    }
+  });
+  const need = Math.max(3, Math.floor(0.3 * npages)), noise = new Set();
+  for (const i of margin) {
+    const t = lines[i].text.trim(), k = PS.normKey(t).replace(/\d+/g, '#');
+    if (PAGE_NO.test(t) || (npages >= 3 && cnt.get(k).size >= need)) noise.add(i);
+  }
+  return noise;
+}
+function repeatedKeys(lines) {            // dòng lặp ở ≥ nửa số trang (watermark chữ, logo chữ…) — chỉ loại khỏi ứng viên heading
+  const pages = new Set(lines.map(l => l.page)).size, all = new Map(), out = new Set();
+  if (pages < 3) return out;
+  lines.forEach(l => { const k = PS.normKey(l.text); if (k.length > 2) { if (!all.has(k)) all.set(k, new Set()); all.get(k).add(l.page); } });
+  const half = Math.max(3, Math.ceil(0.5 * pages));
+  for (const [k, v] of all) if (v.size >= half) out.add(k);
+  return out;
+}
+function bodySize(lines, noise) {
+  const c = new Map();
+  lines.forEach((l, i) => { if (!noise.has(i)) { const k = Math.round(l.size * 2) / 2; c.set(k, (c.get(k) || 0) + l.text.length); } });
+  let best = null, bv = -1;
+  for (const [k, v] of c) if (v > bv) { best = k; bv = v; }
+  return best;
+}
+function makeSegments(lines, noise) {
+  const segs = []; let cur = null;
+  lines.forEach((l, i) => {
+    if (noise.has(i)) { cur = null; return; }
+    const t = PS.nfc(l.text).trim(); if (!t) return;
+    const same = cur && cur.page === l.page && cur.block === l.block && Math.abs(cur.size - l.size) <= 0.6 &&
+      cur.bold === l.bold && !LIST_MARK.test(t) && !(l.newPara);
+    if (same) { cur.text += ' ' + t; cur.nlines++; cur.size = Math.max(cur.size, l.size); }
+    else { cur = { page: l.page, block: l.block, y0: l.y0, x0: l.x0 || 0, text: t, size: l.size, bold: l.bold, nlines: 1, block_nsegs: 1,
+      fam: null, cand: false, bigger: false, level: null, kind: 'body', merged: false }; segs.push(cur); }
+  });
+  const pb = new Map();
+  segs.forEach(s => { const k = s.page + ':' + s.block; pb.set(k, (pb.get(k) || 0) + 1); });
+  segs.forEach(s => (s.block_nsegs = pb.get(s.page + ':' + s.block)));
+  return segs;
+}
+const isCaps = t => { const L = [...t].filter(c => /\p{L}/u.test(c)); return L.length >= 4 && L.every(c => c === c.toUpperCase() && c !== c.toLowerCase()); };
+function judge(s, body) {
+  const t = s.text.trim(), n = t.length;
+  s.fam = matchNumbering(t)[0];
+  s.bigger = s.size >= body + Math.max(1.0, body * 0.08);
+  const caps = isCaps(t), styleOk = s.bigger || s.bold || caps;
+  if (n < 2 || n > 160 || LEADER.test(t) || ',;'.includes(t[n - 1])) { s.cand = false; return; }
+  if (STRONG.has(s.fam)) s.cand = n <= 120 && (styleOk || n <= 80);
+  else if (s.fam) s.cand = !!(styleOk && n <= 120 && (!t.endsWith('.') || s.bigger || s.bold));
+  else if (s.bigger) s.cand = s.nlines <= 3 && !t.endsWith('.');
+  else if (s.bold || caps) {
+    const digits = [...t].filter(c => c >= '0' && c <= '9').length;
+    s.cand = n <= 100 && s.nlines <= 2 && s.block_nsegs === 1 && s.size >= body - 0.5 && !/[.:,]$/.test(t) && digits <= n * 0.4;
+  } else s.cand = false;
+}
+function cluster(sizes, tol = 0.6) {
+  const out = new Map(), reps = [];
+  [...new Set(sizes)].sort((a, b) => b - a).forEach(sz => {
+    if (!reps.length || reps[reps.length - 1] - sz > tol) reps.push(sz);
+    out.set(sz, reps.length - 1);
+  });
+  return out;
+}
+PS.normalizeLevels = function (entries) {
+  let prev = 0;
+  return entries.map(e => { const l = Math.max(1, Math.min(+e.level, prev + 1)); prev = l; return Object.assign({}, e, { level: l }); });
+};
+
+PS.detectHeadings = function (lines, maxLevel = 4) {
+  if (!lines.length) return { segs: [], headings: [] };
+  const noise = findNoise(lines), body = bodySize(lines, noise);
+  if (body == null) return { segs: [], headings: [] };
+  let segs = makeSegments(lines, noise);
+  const rep = repeatedKeys(lines);
+  segs = segs.filter(s => !(rep.has(PS.normKey(s.text)) && s.size >= body * 1.4));   // chữ to lặp mọi trang = watermark/logo
+  segs.forEach(s => { judge(s, body); if (rep.has(PS.normKey(s.text))) s.cand = false; });
+  for (let i = 0; i + 1 < segs.length; i++) {         // "CHƯƠNG I" + tên chương ở dòng kế
+    const a = segs[i], b = segs[i + 1];
+    if (a.cand && (a.fam === 'chuong' || a.fam === 'muc') && b.cand && !b.fam && a.page === b.page && b.nlines <= 2 &&
+        PS.stripLeadingNumber(a.text) === a.text.trim() && b.y0 - a.y0 < 3 * Math.max(a.size, 10)) {
+      a.text = a.text.trim() + ' ' + b.text.trim(); b.cand = false; b.merged = true;
+    }
+  }
+  segs = segs.filter(s => !s.merged);
+  let cands = segs.filter(s => s.cand);
+  const famCount = new Map();
+  cands.forEach(s => s.fam && famCount.set(s.fam, (famCount.get(s.fam) || 0) + 1));
+  const use = [];
+  for (const f of PRIORITY) {
+    const c = famCount.get(f) || 0;
+    const parentOk = f.startsWith('dec') && f !== 'dec1' && use.includes('dec' + (+f.slice(3) - 1));
+    if (c >= (STRONG.has(f) || parentOk ? 1 : 2)) use.push(f);
+  }
+  const famLevel = {}, famSize = {};
+  use.forEach((f, i) => { famLevel[f] = i + 1; famSize[f] = median(cands.filter(s => s.fam === f).map(s => s.size)); });
+  cands.forEach(s => { if (s.fam && !(s.fam in famLevel)) { s.fam = null; if (!(s.bigger || s.bold || isCaps(s.text))) s.cand = false; } });
+  cands = segs.filter(s => s.cand);
+  let sty = cands.filter(s => !s.fam);
+  const firstPage = Math.min(...segs.map(s => s.page));
+  if (sty.length) {                                       // tiêu đề văn bản
+    const top = Math.max(...sty.map(s => s.size)), tops = sty.filter(s => Math.abs(s.size - top) <= 0.6);
+    const rest = cands.filter(s => !tops.includes(s)).map(s => s.size);
+    const clear = rest.length ? rest.every(x => top - x >= 1.5) : true;
+    if (tops.length === 1 && tops[0].page === firstPage && top >= body * 1.3 && clear) {
+      tops[0].level = 0; tops[0].kind = 'title'; sty = sty.filter(s => s !== tops[0]);
+    }
+  }
+  cands.forEach(s => { if (s.fam && famLevel[s.fam]) { s.level = famLevel[s.fam]; s.kind = 'numbered'; } });
+  if (sty.length) {
+    if (!use.length) {
+      const keyed = new Map(sty.map(s => [s, s.bigger ? s.size : -1]));
+      const cl = cluster([...keyed.values()].filter(v => v > 0)), ncl = new Set(cl.values()).size;
+      sty.forEach(s => { const k = keyed.get(s); s.level = k > 0 ? cl.get(k) + 1 : ncl + 1; s.kind = 'style'; });
+    } else {
+      const topFam = Math.max(...Object.values(famSize));
+      sty.forEach(s => {
+        if (s.size > topFam + 0.6) s.level = 1;
+        else { let best = null, bd = 1e9; for (const f of use) { const d = Math.abs(s.size - famSize[f]) - famLevel[f] * 1e-6; if (d < bd) { bd = d; best = f; } } s.level = famLevel[best]; }
+        s.kind = 'style';
+      });
+    }
+  }
+  let prev = 0;
+  segs.forEach(s => { if (s.level == null || s.level === 0) return; s.level = Math.max(1, Math.min(s.level, maxLevel, prev + 1)); prev = s.level; });
+  segs.forEach(s => { if (s.level == null) s.kind = 'body'; });
+  const headings = segs.filter(s => s.level != null).map(s => ({ level: s.level, title: s.text.trim(), orig: s.text.trim(), page: s.page, y: Math.round(s.y0 * 10) / 10, kind: s.kind }));
+  return { segs, headings };
+};
+
+/* áp danh sách heading đã chỉnh; trả về số dòng khớp */
+PS.applyOverrides = function (segs, edited) {
+  const want = new Map(edited.map(h => [h.page + '|' + PS.normKey(h.orig || h.title), h]));
+  let matched = 0;
+  segs.forEach(s => {
+    const h = want.get(s.page + '|' + PS.normKey(s.text));
+    if (h) { s.level = +h.level; s.kind = s.level === 0 ? 'title' : 'edited'; s.text = h.title; matched++; }
+    else { s.level = null; s.kind = 'body'; }
+  });
+  return matched;
+};
+
+/* ---------------- trích xuất dòng chữ từ PDF bằng pdf.js ---------------- */
+PS.getPdfjs = async function () {
+  if (PS._pdfjs) return PS._pdfjs;
+  const base = PS.CDN.pdfjs;
+  const lib = await import(base + 'pdf.min.mjs');
+  const code = await (await fetch(base + 'pdf.worker.min.mjs')).text();
+  lib.GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([code], { type: 'text/javascript' }));
+  return (PS._pdfjs = lib);
+};
+PS.openPdfjs = async function (bytes, password) {
+  const lib = await PS.getPdfjs();
+  const task = lib.getDocument({ data: bytes.slice(0), password: password || undefined, isEvalSupported: false });
+  try { return await task.promise; }
+  catch (e) {
+    if (e && (e.name === 'PasswordException' || /password/i.test(e.message || ''))) throw new Error('PDF có mật khẩu — hãy nhập đúng mật khẩu (hoặc dùng tab "Mở khóa").');
+    throw e;
+  }
+};
+
+PS.extractLines = async function (bytes, opt = {}) {
+  const doc = await PS.openPdfjs(bytes, opt.password), lines = []; let block = 0;
+  for (let p = 1; p <= doc.numPages; p++) {
+    opt.onProgress && opt.onProgress(p, doc.numPages);
+    const page = await doc.getPage(p), H = page.getViewport({ scale: 1 }).height;
+    try { await page.getOperatorList(); } catch (e) { /* bỏ qua: không phân giải được font */ }
+    const tc = await page.getTextContent(), fcache = new Map();
+    const isBold = fn => {
+      if (fcache.has(fn)) return fcache.get(fn);
+      let name = '', b = false;
+      try { if (page.commonObjs.has(fn)) { const f = page.commonObjs.get(fn); name = f.name || f.loadedName || ''; b = !!(f.bold || f.black); } } catch (e) { /* */ }
+      const ff = (tc.styles && tc.styles[fn] && tc.styles[fn].fontFamily) || '';
+      b = b || /bold|black|heavy|semibold|demi|đậm/i.test(name + ' ' + ff);
+      fcache.set(fn, b); return b;
+    };
+    const items = [];
+    for (const it of tc.items) {
+      if (it.str === undefined || !it.str.trim()) continue;
+      const tr = it.transform, size = Math.hypot(tr[2], tr[3]) || it.height;
+      if (!size || Math.abs(tr[1]) > Math.abs(tr[0]) * 0.3) continue;   // bỏ chữ xoay (watermark…)
+      items.push({ str: it.str, x: tr[4], y: tr[5], w: it.width || 0, size, bold: isBold(it.fontName) });
+    }
+    items.sort((a, b) => b.y - a.y || a.x - b.x);
+    const rows = [];
+    for (const it of items) {
+      const r = rows[rows.length - 1];
+      if (r && Math.abs(r.y - it.y) <= 0.4 * Math.max(r.size, it.size)) { r.items.push(it); r.size = Math.max(r.size, it.size); }
+      else rows.push({ y: it.y, size: it.size, items: [it] });
+    }
+    const pl = rows.map(r => {
+      r.items.sort((a, b) => a.x - b.x);
+      let text = '', end = null; const sw = new Map(), bw = { t: 0, f: 0 };
+      for (const it of r.items) {
+        if (end !== null && it.x - end > 0.18 * it.size && !text.endsWith(' ') && !it.str.startsWith(' ')) text += ' ';
+        text += it.str; end = it.x + it.w;
+        const k = Math.round(it.size * 10) / 10, n = it.str.trim().length;
+        sw.set(k, (sw.get(k) || 0) + n); bw[it.bold ? 't' : 'f'] += n;
+      }
+      let size = r.size, bv = -1; for (const [k, v] of sw) if (v > bv) { size = k; bv = v; }
+      return { page: p, y: r.y, y0: H - r.y - size * 0.8, x0: r.items[0].x, text: PS.nfc(text).replace(/\s+/g, ' ').trim(), size, bold: bw.t > bw.f, page_h: H };
+    }).filter(l => l.text);
+    // gom thành khối theo khoảng cách dòng điển hình của trang
+    const gaps = new Map();
+    for (let i = 1; i < pl.length; i++) if (Math.abs(pl[i].size - pl[i - 1].size) < 0.6) { const g = Math.round(pl[i - 1].y - pl[i].y); if (g > 0) gaps.set(g, (gaps.get(g) || 0) + 1); }
+    let typ = 0, tv = 0; for (const [g, v] of gaps) if (v > tv) { typ = g; tv = v; }
+    block++;
+    pl.forEach((l, i) => {
+      if (i > 0) {
+        const pv = pl[i - 1], gap = pv.y - l.y, lim = Math.max(typ * 1.3, pv.size * 1.25);
+        if (gap > lim || Math.abs(l.size - pv.size) > 0.6) block++;
+        else if (l.x0 - pv.x0 > pv.size * 0.9 && /[.!?:;…”")]$/.test(pv.text)) { block++; }   // thụt đầu dòng = đoạn mới
+      }
+      l.block = block; lines.push(l);
+    });
+  }
+  return { lines, pages: doc.numPages };
+};
+
+/* ---------------- tạo file Word (tự dựng OOXML bằng JSZip) ---------------- */
+const SCHEMES = {
+  decimal: { label: '1. / 1.1. / 1.1.1.', lv: [['decimal', '%1.', 'tab', 0], ['decimal', '%1.%2.', 'tab', 0], ['decimal', '%1.%2.%3.', 'tab', 0], ['decimal', '%1.%2.%3.%4.', 'tab', 0], ['decimal', '%1.%2.%3.%4.%5.', 'tab', 0], ['decimal', '%1.%2.%3.%4.%5.%6.', 'tab', 0]] },
+  vn_roman: { label: 'I. / 1. / 1.1. / 1.1.1.', lv: [['upperRoman', '%1.', 'tab', 0], ['decimal', '%2.', 'tab', 0], ['decimal', '%2.%3.', 'tab', 0], ['decimal', '%2.%3.%4.', 'tab', 0], ['lowerLetter', '%5)', 'tab', 0], ['decimal', '(%6)', 'tab', 0]] },
+  vn_legal: { label: 'Chương I / Điều 1. / 1. (Điều đánh số liên tục)', lv: [['upperRoman', 'Chương %1', 'space', 0], ['decimal', 'Điều %2.', 'space', 1], ['decimal', '%3.', 'tab', 0], ['lowerLetter', '%4)', 'tab', 0], ['decimal', '%5)', 'tab', 0], ['lowerLetter', '%6.', 'tab', 0]] },
+};
+PS.WORD_SCHEMES = SCHEMES;
+const IND = [567, 709, 851, 993, 1134, 1276];
+
+function numberingXml(scheme, levels) {
+  const lv = SCHEMES[scheme].lv.slice(0, levels).map(([fmt, text, suff, nr], i) => {
+    const ind = suff === 'space' ? 0 : IND[i];
+    return `<w:lvl w:ilvl="${i}"><w:start w:val="1"/><w:numFmt w:val="${fmt}"/>${nr ? '<w:lvlRestart w:val="0"/>' : ''}<w:pStyle w:val="Heading${i + 1}"/><w:suff w:val="${suff}"/><w:lvlText w:val="${PS.esc(text)}"/><w:lvlJc w:val="left"/><w:pPr><w:ind w:left="${ind}" w:hanging="${ind}"/></w:pPr></w:lvl>`;
+  }).join('');
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:numbering ${NS}><w:abstractNum w:abstractNumId="0"><w:multiLevelType w:val="multilevel"/>${lv}</w:abstractNum><w:num w:numId="1"><w:abstractNumId w:val="0"/></w:num></w:numbering>`;
+}
+function stylesXml(font, pt, levels, numbered) {
+  const sz = Math.round(pt * 2), f = PS.esc(font);
+  const rf = `<w:rFonts w:ascii="${f}" w:hAnsi="${f}" w:eastAsia="${f}" w:cs="${f}"/>`;
+  let s = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles ${NS}><w:docDefaults><w:rPrDefault><w:rPr>${rf}<w:sz w:val="${sz}"/><w:szCs w:val="${sz}"/><w:lang w:val="vi-VN" w:eastAsia="vi-VN" w:bidi="ar-SA"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="120" w:line="312" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults>`;
+  s += `<w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/><w:qFormat/><w:pPr><w:jc w:val="both"/></w:pPr></w:style>`;
+  s += `<w:style w:type="paragraph" w:styleId="Title"><w:name w:val="Title"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:qFormat/><w:pPr><w:spacing w:after="360"/><w:jc w:val="center"/></w:pPr><w:rPr><w:b/><w:bCs/><w:sz w:val="${sz + 10}"/><w:szCs w:val="${sz + 10}"/></w:rPr></w:style>`;
+  for (let i = 1; i <= levels; i++) {
+    const np = numbered ? `<w:numPr><w:ilvl w:val="${i - 1}"/><w:numId w:val="1"/></w:numPr>` : '';
+    const z = sz + (i === 1 ? 2 : 0);
+    s += `<w:style w:type="paragraph" w:styleId="Heading${i}"><w:name w:val="heading ${i}"/><w:basedOn w:val="Normal"/><w:next w:val="Normal"/><w:uiPriority w:val="9"/><w:qFormat/><w:pPr><w:keepNext/><w:keepLines/>${np}<w:spacing w:before="${i === 1 ? 360 : 240}" w:after="120"/><w:jc w:val="left"/><w:outlineLvl w:val="${i - 1}"/></w:pPr><w:rPr><w:b/><w:bCs/>${i >= 4 ? '<w:i/><w:iCs/>' : ''}<w:sz w:val="${z}"/><w:szCs w:val="${z}"/></w:rPr></w:style>`;
+  }
+  return s + '</w:styles>';
+}
+const para = (text, style, extra = '') => `<w:p><w:pPr>${style ? `<w:pStyle w:val="${style}"/>` : ''}${extra}</w:pPr><w:r><w:t xml:space="preserve">${PS.esc(text)}</w:t></w:r></w:p>`;
+function tocXml(levels) {
+  const f = k => `<w:r><w:fldChar w:fldCharType="${k}"/></w:r>`;
+  return `<w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:rPr><w:b/></w:rPr><w:t>MỤC LỤC</w:t></w:r></w:p>` +
+    `<w:p><w:pPr><w:jc w:val="left"/></w:pPr>${f('begin')}<w:r><w:instrText xml:space="preserve"> TOC \\o "1-${levels}" \\h \\z \\u </w:instrText></w:r>${f('separate')}<w:r><w:t>(Bấm chuột phải vào đây &gt; Update Field để cập nhật mục lục)</w:t></w:r>${f('end')}</w:p>` +
+    `<w:p><w:r><w:br w:type="page"/></w:r></w:p>`;
+}
+async function packDocx(body, o) {
+  const numbered = !!SCHEMES[o.scheme], zip = new JSZip();
+  zip.file('[Content_Types].xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/numbering.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.numbering+xml"/><Override PartName="/word/settings.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.settings+xml"/></Types>`);
+  zip.file('_rels/.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>`);
+  zip.file('word/_rels/document.xml.rels', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/numbering" Target="numbering.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/settings" Target="settings.xml"/></Relationships>`);
+  zip.file('word/settings.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:settings ${NS}>${o.toc ? '<w:updateFields w:val="true"/>' : ''}</w:settings>`);
+  zip.file('word/styles.xml', stylesXml(o.font, o.size, o.levels, numbered));
+  zip.file('word/numbering.xml', numbered ? numberingXml(o.scheme, o.levels) : `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:numbering ${NS}/>`);
+  zip.file('word/document.xml', `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ${NS}><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1701" w:header="709" w:footer="709" w:gutter="0"/></w:sectPr></w:body></w:document>`);
+  return zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE' });
+}
+
+const END_SENT = /[.!?:;…”"')\]]$/, BULLET = /^[•●▪■□◦]\s*/;
+function bodyParagraphs(items) {
+  const out = []; let cur = -1, lastPage = null;
+  for (const s of items) {
+    if (s.level != null) { cur = -1; out.push({ k: 'h', l: s.level, t: s.text.trim() }); lastPage = s.page; continue; }
+    const t = s.text.trim();
+    if (cur >= 0 && lastPage !== s.page && !END_SENT.test(out[cur].t) && /^\p{Ll}/u.test(t)) out[cur].t += ' ' + t;
+    else { out.push({ k: 'p', t }); cur = out.length - 1; }
+    lastPage = s.page;
+  }
+  return out;
+}
+PS.buildDocx = async function (items, o = {}) {
+  o = Object.assign({ scheme: 'decimal', font: 'Times New Roman', size: 13, toc: true, strip: true, levels: 4 }, o);
+  o.levels = Math.max(1, Math.min(6, +o.levels || 4));
+  const seq = bodyParagraphs(items); let body = '';
+  seq.filter(x => x.k === 'h' && x.l === 0).forEach(x => (body += para(x.t, 'Title')));
+  if (o.toc) body += tocXml(o.levels);
+  for (const x of seq) {
+    if (x.k === 'h') {
+      if (x.l === 0) continue;
+      let t = x.t; if (SCHEMES[o.scheme] && o.strip) t = PS.stripLeadingNumber(t);
+      body += para(t, 'Heading' + Math.min(x.l, o.levels));
+    } else body += para(x.t.replace(BULLET, '• '));
+  }
+  return packDocx(body, o);
+};
+PS.buildTemplate = async function (o = {}) {
+  o = Object.assign({ scheme: 'decimal', font: 'Times New Roman', size: 13, levels: 4, toc: false }, o);
+  o.levels = Math.max(1, Math.min(6, +o.levels || 4));
+  const sample = ['Tổng quan', 'Phạm vi áp dụng', 'Căn cứ pháp lý', 'Chi tiết', 'Mục nhỏ', 'Mục nhỏ hơn'];
+  let body = para('TIÊU ĐỀ VĂN BẢN', 'Title');
+  for (let r = 0; r < 2; r++) for (let i = 0; i < o.levels; i++) {
+    body += para(sample[i] + ' (mẫu)', 'Heading' + (i + 1));
+    if (i === o.levels - 1) body += para('Nội dung mẫu. Xóa các dòng mẫu và nhập nội dung của bạn; chọn Heading 1…n trong ô Styles, số thứ tự tự động chạy.');
+  }
+  return packDocx(body, o);
+};
+})();
+
+/* ===== 02-pdf: thao tác PDF bằng pdf-lib / qpdf-wasm / pdf.js ===== */
+(function () {
+const PS = (window.PS = window.PS || {});
+const L = () => window.PDFLib;
+
+/* ---------- tiện ích ---------- */
+PS.pageList = function (spec, n) {
+  spec = (spec || '').trim();
+  if (!spec) return Array.from({ length: n }, (_, i) => i + 1);
+  const out = [];
+  for (const part of spec.split(/[,;\s]+/).filter(Boolean)) {
+    let m, a, b;
+    if ((m = /^(\d*)-(\d*)$/.exec(part)) && (m[1] || m[2])) { a = +m[1] || 1; b = +m[2] || n; }
+    else if (/^\d+$/.test(part)) a = b = +part;
+    else throw new Error(`Khoảng trang không hợp lệ: '${part}'`);
+    if (a < 1 || b > n || a > b) throw new Error(`Khoảng trang '${part}' nằm ngoài 1–${n}`);
+    for (let i = a; i <= b; i++) out.push(i);
+  }
+  return out;
+};
+PS.pageRanges = function (spec, n) {
+  const out = [];
+  for (const part of (spec || '').split(/[,;]/).map(s => s.trim()).filter(Boolean)) {
+    const l = PS.pageList(part, n); out.push([l[0], l[l.length - 1]]);
+  }
+  if (!out.length) throw new Error('Chưa nhập khoảng trang');
+  return out;
+};
+const hex2rgb = h => { const m = /^#?([0-9a-f]{6})$/i.exec(h || ''); const v = m ? parseInt(m[1], 16) : 0x888888; return L().rgb(((v >> 16) & 255) / 255, ((v >> 8) & 255) / 255, (v & 255) / 255); };
+const latin1 = u8 => { let s = ''; for (let i = 0; i < u8.length; i += 0x8000) s += String.fromCharCode.apply(null, u8.subarray(i, i + 0x8000)); return s; };
+const fromLatin1 = s => { const u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i) & 255; return u; };
+
+/* ---------- qpdf-wasm: mở khóa / đặt mật khẩu ---------- */
+PS.qpdf = async function (args, input) {
+  const base = PS.CDN.qpdf;
+  if (!PS._qpdfCreate) {
+    let mod = null, err = null;
+    for (const f of ['qpdf.mjs', 'qpdf.js']) { try { mod = await import(base + f); if (mod) break; } catch (e) { err = e; } }
+    if (!mod) throw new Error('Không tải được qpdf-wasm (' + (err && err.message) + '). Kiểm tra kết nối mạng.');
+    PS._qpdfCreate = mod.default || mod.createModule || mod;
+  }
+  const logs = [];
+  const q = await PS._qpdfCreate({ locateFile: () => base + 'qpdf.wasm', print: t => logs.push(t), printErr: t => logs.push(t) });
+  q.FS.writeFile('/in.pdf', input);
+  try { q.callMain(args); } catch (e) { if (e && e.status !== undefined && e.status > 3) logs.push('exit ' + e.status); else if (!(e && e.status !== undefined)) logs.push(String(e && e.message || e)); }
+  let out;
+  try { out = q.FS.readFile('/out.pdf'); } catch (e) { out = null; }
+  if (!out || !out.length) {
+    const msg = logs.join(' ');
+    if (/invalid password/i.test(msg)) throw new Error('Sai mật khẩu.');
+    throw new Error('qpdf không tạo được file: ' + (msg || 'lỗi không rõ'));
+  }
+  return out;
+};
+PS.qpdfDecrypt = (bytes, pw) => PS.qpdf([...(pw ? ['--password=' + pw] : []), '--decrypt', '/in.pdf', '/out.pdf'], bytes);
+PS.qpdfEncrypt = function (bytes, o) {
+  const rnd = () => Array.from(crypto.getRandomValues(new Uint8Array(12)), b => 'abcdefghijkmnpqrstuvwxyz23456789'[b % 32]).join('');
+  const owner = o.owner || rnd();
+  const args = ['/in.pdf', '--encrypt', o.user || '', owner, '256',
+    '--print=' + (o.print || 'full'), '--modify=' + (o.modify || 'all'), '--extract=' + (o.extract ? 'y' : 'n'),
+    '--annotate=' + (o.annotate ? 'y' : 'n'), '--', '/out.pdf'];
+  return PS.qpdf(args, bytes).then(out => ({ bytes: out, owner }));
+};
+PS.isEncrypted = async function (bytes) {
+  try { await L().PDFDocument.load(bytes, { updateMetadata: false }); return false; }
+  catch (e) { return e instanceof L().EncryptedPDFError || /encrypt/i.test(e.message || ''); }
+};
+PS.loadPdf = async function (bytes, pw) {
+  const { PDFDocument } = L();
+  try { return await PDFDocument.load(bytes, { updateMetadata: false }); }
+  catch (e) {
+    if (e instanceof L().EncryptedPDFError || /encrypt/i.test(e.message || '')) {
+      let dec; try { dec = await PS.qpdfDecrypt(bytes, pw); } catch (e2) { throw new Error(pw ? 'Không mở được PDF (sai mật khẩu?): ' + e2.message : 'PDF có mật khẩu — hãy nhập mật khẩu hoặc dùng tab "Mở khóa". ' + e2.message); }
+      return PDFDocument.load(dec, { updateMetadata: false });
+    }
+    throw new Error('Không đọc được PDF: ' + e.message);
+  }
+};
+PS.save = doc => doc.save({ useObjectStreams: true });
+
+/* ---------- font Unicode (tiếng Việt) ---------- */
+PS.userFonts = {};
+const FONT_FILES = { regular: 'Tinos-Regular.ttf', bold: 'Tinos-Bold.ttf', italic: 'Tinos-Italic.ttf', bolditalic: 'Tinos-BoldItalic.ttf' };
+const fontBytesCache = {};
+async function fontBytes(v) {
+  if (PS.userFonts[v]) return PS.userFonts[v];
+  if (PS.userFonts.regular && v !== 'regular') return PS.userFonts.regular;
+  if (fontBytesCache[v]) return fontBytesCache[v];
+  let err;
+  for (const base of PS.CDN.fonts) {
+    try { const r = await fetch(base + FONT_FILES[v]); if (!r.ok) throw new Error(r.status); return (fontBytesCache[v] = new Uint8Array(await r.arrayBuffer())); }
+    catch (e) { err = e; }
+  }
+  throw err || new Error('không tải được font');
+}
+PS.makeFonts = function (doc) {
+  const { StandardFonts } = L();
+  const std = { regular: StandardFonts.TimesRoman, bold: StandardFonts.TimesRomanBold, italic: StandardFonts.TimesRomanItalic, bolditalic: StandardFonts.TimesRomanBoldItalic };
+  const self = { uni: false, warn: '', cache: {} };
+  try { if (window.fontkit) { doc.registerFontkit(window.fontkit); self.uni = true; } else self.warn = 'không có fontkit'; } catch (e) { self.warn = e.message; }
+  self.get = async v => {
+    if (self.cache[v]) return self.cache[v];
+    let f = null;
+    if (self.uni) { try { f = await doc.embedFont(await fontBytes(v), { subset: true }); } catch (e) { self.uni = false; self.warn = 'không tải được font Unicode: ' + e.message; } }
+    if (!f) f = await doc.embedFont(std[v]);
+    return (self.cache[v] = f);
+  };
+  self.fit = t => (self.uni ? PS.nfc(t) : PS.stripVN(t));
+  return self;
+};
+
+/* ---------- outline (bookmark) ---------- */
+PS.setOutline = function (doc, entries) {
+  const { PDFName, PDFHexString, PDFNumber, PDFNull } = L(), ctx = doc.context, pages = doc.getPages();
+  const list = PS.normalizeLevels(entries.filter(e => e.page >= 1 && e.page <= pages.length));
+  const catalog = doc.catalog;
+  if (!list.length) { catalog.delete(PDFName.of('Outlines')); return; }
+  const root = { children: [] }, stack = [{ level: 0, node: root }];
+  for (const e of list) {
+    const node = { title: e.title, page: e.page, children: [] };
+    while (stack[stack.length - 1].level >= e.level) stack.pop();
+    stack[stack.length - 1].node.children.push(node); stack.push({ level: e.level, node });
+  }
+  const outlinesRef = ctx.nextRef();
+  const build = (children, parentRef) => {
+    const refs = children.map(() => ctx.nextRef()); let total = children.length;
+    children.forEach((c, i) => {
+      const d = ctx.obj({});
+      d.set(PDFName.of('Title'), PDFHexString.fromText(c.title));
+      d.set(PDFName.of('Parent'), parentRef);
+      d.set(PDFName.of('Dest'), ctx.obj([pages[c.page - 1].ref, PDFName.of('XYZ'), PDFNull, PDFNull, PDFNull]));
+      if (i > 0) d.set(PDFName.of('Prev'), refs[i - 1]);
+      if (i < children.length - 1) d.set(PDFName.of('Next'), refs[i + 1]);
+      if (c.children.length) {
+        const r = build(c.children, refs[i]);
+        d.set(PDFName.of('First'), r.first); d.set(PDFName.of('Last'), r.last); d.set(PDFName.of('Count'), PDFNumber.of(r.total)); total += r.total;
+      }
+      ctx.assign(refs[i], d);
+    });
+    return { first: refs[0], last: refs[refs.length - 1], total };
+  };
+  const r = build(root.children, outlinesRef);
+  const o = ctx.obj({}); o.set(PDFName.of('Type'), PDFName.of('Outlines'));
+  o.set(PDFName.of('First'), r.first); o.set(PDFName.of('Last'), r.last); o.set(PDFName.of('Count'), PDFNumber.of(r.total));
+  ctx.assign(outlinesRef, o);
+  catalog.set(PDFName.of('Outlines'), outlinesRef);
+  catalog.set(PDFName.of('PageMode'), PDFName.of('UseOutlines'));
+};
+
+/* ---------- mục lục (trang TOC có link) ---------- */
+PS.insertToc = async function (doc, heads, o = {}) {
+  const { rgb, PDFName } = L(), ctx = doc.context;
+  heads = heads.filter(h => h.level >= 1 && h.level <= (o.levels || 3));
+  if (!heads.length) throw new Error('Không có heading nào để tạo mục lục');
+  const fonts = PS.makeFonts(doc), fr = await fonts.get('regular'), fb = await fonts.get('bold');
+  const at = Math.max(0, Math.min(+o.insertAt || 0, doc.getPageCount()));
+  const ref = doc.getPage(Math.min(at, doc.getPageCount() - 1)), { width: W, height: H } = ref.getSize();
+  const margin = 56, lh = 19, topFirst = 110, topNext = 70;
+  const perFirst = Math.max(1, Math.floor((H - margin - topFirst) / lh)), perNext = Math.max(1, Math.floor((H - margin - topNext) / lh));
+  const nPages = heads.length <= perFirst ? 1 : 1 + Math.ceil((heads.length - perFirst) / perNext);
+  const tocPages = []; for (let i = 0; i < nPages; i++) tocPages.push(doc.insertPage(at + i, [W, H]));
+  const shown = p1 => (p1 - 1) + ((p1 - 1) >= at ? nPages : 0) + 1;
+  const all = doc.getPages(), rightX = W - margin; let pos = 0;
+  tocPages.forEach((page, i) => {
+    let y = H - (i === 0 ? topFirst : topNext);
+    if (i === 0) { const t = fonts.fit(o.title || 'MỤC LỤC'); page.drawText(t, { x: (W - fb.widthOfTextAtSize(t, 16)) / 2, y: H - 70, size: 16, font: fb }); }
+    const cap = i === 0 ? perFirst : perNext;
+    for (const h of heads.slice(pos, pos + cap)) {
+      const fs = h.level === 1 ? 12 : 11, f = h.level === 1 ? fb : fr, x0 = margin + (h.level - 1) * 16;
+      const num = String(shown(h.page)), nw = f.widthOfTextAtSize(num, fs), avail = rightX - nw - 24 - x0;
+      let text = fonts.fit(h.title).replace(/\s+/g, ' ').trim();
+      while (f.widthOfTextAtSize(text, fs) > avail && text.length > 4) text = text.slice(0, -2).trimEnd() + '…';
+      if (!fonts.uni) text = text.replace(/…/g, '...');
+      const tw = f.widthOfTextAtSize(text, fs);
+      page.drawText(text, { x: x0, y, size: fs, font: f });
+      const dw = fr.widthOfTextAtSize(' .', fs), cnt = Math.floor((rightX - nw - 6 - (x0 + tw + 6)) / dw);
+      if (cnt > 0) page.drawText(' .'.repeat(cnt), { x: x0 + tw + 6, y, size: fs, font: fr, color: rgb(0.45, 0.45, 0.45) });
+      page.drawText(num, { x: rightX - nw, y, size: fs, font: f });
+      const target = all[shown(h.page) - 1];
+      if (target) {
+        const link = ctx.register(ctx.obj({ Type: 'Annot', Subtype: 'Link', Rect: [x0, y - 3, rightX, y + fs], Border: [0, 0, 0], Dest: [target.ref, 'Fit'] }));
+        page.node.addAnnot(link);
+      }
+      y -= lh;
+    }
+    pos += cap;
+  });
+  return { pages: nPages, warn: fonts.uni ? '' : 'Mục lục dùng chữ không dấu vì chưa nạp được font Unicode.' };
+};
+PS.applyTocBookmarks = async function (doc, heads, o = {}) {
+  heads = heads.filter(h => +h.level >= 1);
+  if (!heads.length) throw new Error('Không có heading nào');
+  const at = Math.max(0, Math.min(+o.insertAt || 0, doc.getPageCount()));
+  let n = 0, warn = '';
+  if (o.toc) { const r = await PS.insertToc(doc, heads, { title: o.title, insertAt: at, levels: o.tocLevels || 3 }); n = r.pages; warn = r.warn; }
+  if (o.bookmarks) {
+    const e = heads.map(h => ({ level: +h.level, title: h.title.trim(), page: h.page + ((h.page - 1) >= at ? n : 0) }));
+    if (o.toc) e.push({ level: 1, title: o.title || 'MỤC LỤC', page: at + 1 });
+    e.sort((a, b) => a.page - b.page);
+    PS.setOutline(doc, e);
+  }
+  return { tocPages: n, warn };
+};
+
+/* ---------- bookmark: ghi / xóa / xuất / nhập văn bản ---------- */
+PS.pdfPages = async (bytes, pw) => (await PS.openPdfjs(bytes, pw)).numPages;
+PS.applyOutline = async function (bytes, entries, pw) {
+  const doc = await PS.loadPdf(bytes, pw), n = doc.getPageCount();
+  const bad = entries.find(e => !(e.page >= 1 && e.page <= n));
+  if (bad) throw new Error(`Bookmark "${bad.title}" trỏ tới trang ${bad.page} — ngoài phạm vi 1–${n}`);
+  PS.setOutline(doc, entries); return PS.save(doc);
+};
+PS.removeOutline = async function (bytes, pw) {
+  const { PDFName } = L(), doc = await PS.loadPdf(bytes, pw);
+  doc.catalog.delete(PDFName.of('Outlines'));
+  const pm = doc.catalog.get(PDFName.of('PageMode')); if (pm && String(pm) === '/UseOutlines') doc.catalog.delete(PDFName.of('PageMode'));
+  return PS.save(doc);
+};
+PS.outlineToText = entries => entries.map(e => '  '.repeat(Math.max(0, e.level - 1)) + e.title + '\t' + e.page).join('\n');
+PS.parseOutlineText = function (text, o = {}) {
+  const lines = text.split(/\r?\n/).map(l => l.replace(/\s+$/, '')).filter(l => l.trim()), offset = +o.offset || 0;
+  if (!lines.length) throw new Error('Chưa có nội dung để nạp');
+  const allEnd = lines.every(l => /\s\d{1,5}$/.test(l.trim()));
+  const indents = [...new Set(lines.map(l => /^[\t ]*/.exec(l)[0].replace(/\t/g, '  ').length))].sort((a, b) => a - b);
+  const byIndent = indents.length > 1;
+  const parsed = lines.map(raw => {
+    const t = raw.trim(); let m = /^(.*\S)(?:\s*[.·…_]{2,}\s*|\t+|\s{2,})(\d{1,5})$/.exec(t);
+    if (!m && allEnd) m = /^(.*\S)\s+(\d{1,5})$/.exec(t);
+    const title = (m ? m[1] : t).replace(/[.·…_\s]+$/, '').trim();
+    return { raw, title, page: m ? +m[2] : null, ind: /^[\t ]*/.exec(raw)[0].replace(/\t/g, '  ').length, fam: PS.matchNumbering(title)[0] };
+  });
+  const order = ['chuong', 'roman', 'muc', 'dieu', 'alpha', 'dec1', 'dec2', 'dec3', 'dec4', 'dec5'];
+  const present = order.filter(f => parsed.some(p => p.fam === f)), rank = f => present.indexOf(f) + 1;
+  let last = 1 - offset;
+  const rows = parsed.map(p => {
+    const level = byIndent ? indents.indexOf(p.ind) + 1 : (p.fam ? rank(p.fam) : 1);
+    if (p.page != null) last = p.page;
+    return { level, title: p.title, orig: p.title, page: last + offset, y: 0, kind: 'text' };
+  });
+  return PS.normalizeLevels(rows);
+};
+
+/* ---------- gộp / tách / sắp xếp / cắt ---------- */
+PS.mergePdfs = async function (files, o = {}) {
+  const { PDFDocument } = L(), out = await PDFDocument.create(), marks = [];
+  for (const f of files) {
+    const src = await PS.loadPdf(f.bytes, f.pw), start = out.getPageCount();
+    (await out.copyPages(src, src.getPageIndices())).forEach(p => out.addPage(p));
+    marks.push({ level: 1, title: PS.stem(f.name), page: start + 1 });
+    for (const e of f.outline || []) marks.push({ level: e.level + 1, title: e.title, page: e.page + start });   // giữ bookmark gốc của từng file
+  }
+  if (o.bookmarks !== false) PS.setOutline(out, marks);
+  else if (marks.some(m => m.level > 1)) PS.setOutline(out, marks.filter(m => m.level > 1).map(m => Object.assign({}, m, { level: m.level - 1 })));
+  return PS.save(out);
+};
+async function slice(src, a, b, outline) {
+  const out = await L().PDFDocument.create(), idx = []; for (let i = a - 1; i <= b - 1; i++) idx.push(i);
+  (await out.copyPages(src, idx)).forEach(p => out.addPage(p));
+  if (outline && outline.length) { const e = outline.filter(x => x.page >= a && x.page <= b).map(x => Object.assign({}, x, { page: x.page - a + 1 })); if (e.length) PS.setOutline(out, e); }
+  return PS.save(out);
+}
+PS.splitPdf = async function (bytes, base, mode, value, o = {}) {
+  const src = await PS.loadPdf(bytes, o.pw), n = src.getPageCount(), parts = [];
+  if (mode === 'ranges') PS.pageRanges(value, n).forEach(([a, b]) => parts.push([a === b ? `${base}_tr${a}.pdf` : `${base}_tr${a}-${b}.pdf`, a, b]));
+  else if (mode === 'every') { const k = Math.max(1, +value || 1); for (let a = 1, i = 1; a <= n; a += k, i++) parts.push([`${base}_${String(i).padStart(2, '0')}.pdf`, a, Math.min(a + k - 1, n)]); }
+  else if (mode === 'each') for (let a = 1; a <= n; a++) parts.push([`${base}_tr${String(a).padStart(String(n).length, '0')}.pdf`, a, a]);
+  else if (mode === 'headings') {
+    const lvl = +value || 1, marks = [...new Map((o.headings || []).filter(h => +h.level === lvl).sort((a, b) => a.page - b.page).map(h => [h.page, h.title])).entries()];
+    if (!marks.length) throw new Error('Không có heading đúng cấp đã chọn');
+    if (marks[0][0] > 1) parts.push([`${base}_00_mo_dau.pdf`, 1, marks[0][0] - 1]);
+    marks.forEach(([p, t], i) => parts.push([`${base}_${String(i + 1).padStart(2, '0')}_${PS.safeName(t)}.pdf`, p, Math.max(p, (marks[i + 1] ? marks[i + 1][0] - 1 : n))]));
+  } else throw new Error('Chế độ tách không hợp lệ');
+  const res = [];
+  for (const [name, a, b] of parts) res.push({ name, bytes: await slice(src, a, b, o.outline), mime: 'application/pdf' });
+  return res;
+};
+PS.organizePdf = async function (bytes, plan, pw, outline) {
+  const { PDFDocument, degrees } = L(), src = await PS.loadPdf(bytes, pw), out = await PDFDocument.create();
+  if (!plan.length) throw new Error('Không còn trang nào để xuất');
+  for (const it of plan) {
+    const [p] = await out.copyPages(src, [it.i]);
+    if (it.rot) p.setRotation(degrees((((p.getRotation().angle + it.rot) % 360) + 360) % 360));
+    out.addPage(p);
+  }
+  if (outline && outline.length) {                      // bookmark trỏ tới trang bị xóa thì bỏ; trang bị đổi chỗ thì trỏ theo vị trí mới
+    const pos = new Map(); plan.forEach((it, k) => { if (!pos.has(it.i + 1)) pos.set(it.i + 1, k + 1); });
+    const e = outline.filter(x => pos.has(x.page)).map(x => Object.assign({}, x, { page: pos.get(x.page) })).sort((a, b) => a.page - b.page);
+    if (e.length) PS.setOutline(out, e);
+  }
+  return PS.save(out);
+};
+PS.cropPdf = async function (bytes, o) {
+  const { PDFDocument } = L(), src = await PS.loadPdf(bytes, o.pw), n = src.getPageCount();
+  const sel = new Set(PS.pageList(o.pages, n)), box = (p, x, y, w, h) => { p.setCropBox(x, y, w, h); p.setMediaBox(x, y, w, h); };
+  if (o.mode === 'margins') {
+    src.getPages().forEach((p, i) => {
+      if (!sel.has(i + 1)) return;
+      const { x, y, width: W, height: H } = p.getCropBox();
+      const w = W - o.left - o.right, h = H - o.top - o.bottom;
+      if (w < 20 || h < 20) throw new Error('Lề cắt quá lớn so với kích thước trang ' + (i + 1));
+      box(p, x + o.left, y + o.bottom, w, h);
+    });
+    return PS.save(src);
+  }
+  const out = await PDFDocument.create();
+  for (let i = 0; i < n; i++) {
+    if (!sel.has(i + 1)) { const [p] = await out.copyPages(src, [i]); out.addPage(p); continue; }
+    const [a, b] = await out.copyPages(src, [i, i]), { x, y, width: W, height: H } = a.getCropBox();
+    if (o.mode === 'halfLR') { box(a, x, y, W / 2, H); box(b, x + W / 2, y, W / 2, H); }
+    else { box(a, x, y + H / 2, W, H / 2); box(b, x, y, W, H / 2); }
+    out.addPage(a); out.addPage(b);
+  }
+  return PS.save(out);
+};
+
+/* ---------- đánh số trang / metadata ---------- */
+PS.addPageNumbers = async function (bytes, o) {
+  const doc = await PS.loadPdf(bytes, o.pw), fonts = PS.makeFonts(doc), font = await fonts.get('regular'), n = doc.getPageCount();
+  const sel = new Set(PS.pageList(o.pages, n)), size = +o.size || 11, margin = +o.margin || 28;
+  let k = +o.start || 1; const first = doc.getPages();
+  first.forEach((p, i) => {
+    if (!sel.has(i + 1) || (o.skipFirst && i === 0)) return;
+    const { width: W, height: H } = p.getSize();
+    const t = fonts.fit((o.format || '{n}').replace('{n}', k).replace('{N}', n + (+o.start || 1) - 1 - (o.skipFirst ? 1 : 0)));
+    const w = font.widthOfTextAtSize(t, size);
+    const x = o.pos.endsWith('l') ? margin : o.pos.endsWith('r') ? W - margin - w : (W - w) / 2;
+    const y = o.pos.startsWith('t') ? H - margin - size * 0.7 : margin - size * 0.3;
+    p.drawText(t, { x, y, size, font });
+    k++;
+  });
+  return { bytes: await PS.save(doc), warn: fonts.uni ? '' : fonts.warn };
+};
+PS.getMeta = async function (bytes, pw) {
+  const d = await PS.loadPdf(bytes, pw);
+  return { title: d.getTitle() || '', author: d.getAuthor() || '', subject: d.getSubject() || '', keywords: d.getKeywords() || '', creator: d.getCreator() || '', producer: d.getProducer() || '' };
+};
+PS.setMeta = async function (bytes, m, pw) {
+  const d = await PS.loadPdf(bytes, pw);
+  d.setTitle(m.title || ''); d.setAuthor(m.author || ''); d.setSubject(m.subject || '');
+  d.setKeywords((m.keywords || '').split(/[,;]/).map(s => s.trim()).filter(Boolean)); d.setCreator(m.creator || ''); d.setProducer(m.producer || '');
+  return PS.save(d);
+};
+
+/* ---------- watermark: đóng ---------- */
+function beginWM(page) {
+  const { PDFOperator, PDFOperatorNames, PDFName } = L(), ctx = page.doc.context;
+  const dict = ctx.obj({}); dict.set(PDFName.of('Type'), PDFName.of('Pagination')); dict.set(PDFName.of('Subtype'), PDFName.of('Watermark'));
+  page.pushOperators(PDFOperator.of(PDFOperatorNames.BeginMarkedContentSequence, [PDFName.of('Artifact'), dict]));
+}
+const endWM = page => page.pushOperators(L().PDFOperator.of(L().PDFOperatorNames.EndMarkedContent));
+
+PS.addWatermark = async function (bytes, o) {
+  const { degrees } = L(), doc = await PS.loadPdf(bytes, o.pw), n = doc.getPageCount(), sel = new Set(PS.pageList(o.pages, n));
+  const th = (+o.rotate || 0) * Math.PI / 180, c = Math.cos(th), s = Math.sin(th), opacity = Math.max(0.02, Math.min(1, (+o.opacity || 30) / 100));
+  let warn = '', draw, w, h, yOff;
+  if (o.type === 'image') {
+    if (!o.image) throw new Error('Chưa chọn ảnh watermark');
+    const img = o.image.type === 'png' ? await doc.embedPng(o.image.bytes) : await doc.embedJpg(o.image.bytes);
+    draw = (page, ox, oy) => page.drawImage(img, { x: ox, y: oy, width: w, height: h, rotate: degrees(+o.rotate || 0), opacity });
+    o._img = img;
+  } else {
+    if (!(o.text || '').trim()) throw new Error('Chưa nhập nội dung watermark');
+    const fonts = PS.makeFonts(doc), font = await fonts.get(o.bold ? 'bold' : 'regular'), text = fonts.fit(o.text), size = +o.size || 48, color = hex2rgb(o.color);
+    if (!fonts.uni && PS.nfc(o.text) !== text) warn = 'Chưa nạp được font Unicode nên watermark phải bỏ dấu tiếng Việt.';
+    w = font.widthOfTextAtSize(text, size); h = size; yOff = size * 0.35;
+    draw = (page, ox, oy) => page.drawText(text, { x: ox, y: oy, size, font, color, opacity, rotate: degrees(+o.rotate || 0) });
+  }
+  doc.getPages().forEach((page, i) => {
+    if (!sel.has(i + 1)) return;
+    const { width: W, height: H } = page.getSize();
+    if (o.type === 'image') { w = W * (+o.scale || 50) / 100; h = w * o._img.height / o._img.width; yOff = h / 2; }
+    const hw = w / 2, centers = [];
+    if (o.mode === 'tile') {
+      const sx = w + (+o.gapX || 60), sy = h + (+o.gapY || 80), R = Math.hypot(W, H) / 2 + Math.max(w, h);
+      for (let j = -Math.ceil(R / sy); j <= Math.ceil(R / sy); j++) for (let i2 = -Math.ceil(R / sx); i2 <= Math.ceil(R / sx); i2++) {
+        const a = i2 * sx + (j % 2 ? sx / 2 : 0), b = j * sy, x = W / 2 + a * c - b * s, y = H / 2 + a * s + b * c;
+        if (x > -w && x < W + w && y > -h && y < H + h) centers.push([x, y]);
+      }
+      if (centers.length > 600) centers.length = 600;
+    } else centers.push([W / 2, H / 2]);
+    beginWM(page);
+    for (const [cx, cy] of centers) draw(page, cx - (hw * c - yOff * s), cy - (hw * s + yOff * c));
+    endWM(page);
+  });
+  return { bytes: await PS.save(doc), warn };
+};
+
+/* ---------- watermark: quét & xóa ---------- */
+function maskContent(s) {
+  const n = s.length, out = []; let i = 0, last = 0, inBI = false;
+  const ws = ch => ch === undefined || ch === ' ' || ch === '\n' || ch === '\r' || ch === '\t' || ch === '\f' || ch === '\0';
+  const blank = (a, b) => { out.push(s.slice(last, a), ' '.repeat(b - a)); last = b; };
+  while (i < n) {
+    const c = s[i];
+    if (c === '(') { let d = 1, j = i + 1; while (j < n && d > 0) { const cj = s[j]; if (cj === '\\') j += 2; else { if (cj === '(') d++; else if (cj === ')') d--; j++; } } j = Math.min(j, n); blank(i, j); i = j; }
+    else if (c === '<') { if (s[i + 1] === '<') i += 2; else { const j = s.indexOf('>', i), e = j < 0 ? n : j + 1; blank(i, e); i = e; } }
+    else if (c === '%') { let j = i; while (j < n && s[j] !== '\n' && s[j] !== '\r') j++; blank(i, j); i = j; }
+    else if (c === 'B' && s[i + 1] === 'I' && ws(s[i - 1]) && ws(s[i + 2])) { inBI = true; i += 2; }
+    else if (inBI && c === 'I' && s[i + 1] === 'D' && ws(s[i - 1]) && ws(s[i + 2])) {
+      const re = /[\s\0]EI(?=[\s\0]|$)/g; re.lastIndex = i + 2; const m = re.exec(s), e = m ? m.index + 1 : n;
+      blank(i + 2, e); i = e; inBI = false;
+    } else i++;
+  }
+  out.push(s.slice(last)); return out.join('');
+}
+function pageContentBytes(doc, page) {
+  const { PDFName, PDFArray, PDFRawStream, decodePDFRawStream } = L(), ctx = doc.context, parts = [];
+  const walk = o => {
+    o = ctx.lookup(o); if (!o) return;
+    if (o instanceof PDFArray) { o.asArray().forEach(walk); return; }
+    if (o instanceof PDFRawStream) parts.push(decodePDFRawStream(o).decode());
+    else if (o.getUnencodedContents) parts.push(o.getUnencodedContents());
+  };
+  walk(page.node.get(PDFName.of('Contents')));
+  return parts.map(latin1).join('\n');
+}
+function setPageContent(doc, page, str) {
+  const ctx = doc.context, ref = ctx.register(ctx.flateStream(fromLatin1(str)));
+  page.node.set(L().PDFName.of('Contents'), ref);
+}
+function pageResources(doc, page) {
+  const { PDFName, PDFDict } = L(); let node = page.node, guard = 0;
+  while (node && guard++ < 20) {
+    const r = node.get(PDFName.of('Resources')); if (r) { const d = doc.context.lookup(r); if (d instanceof PDFDict) return d; }
+    node = node.get(PDFName.of('Parent')) ? doc.context.lookup(node.get(PDFName.of('Parent'))) : null;
+  }
+  return null;
+}
+function subDict(doc, res, key) { const { PDFName, PDFDict } = L(); if (!res) return null; const d = doc.context.lookup(res.get(PDFName.of(key))); return d instanceof PDFDict ? d : null; }
+const nameOf = (o) => (o && o.asString ? o.asString().replace(/^\//, '') : '');
+function ocgName(doc, props, key) {
+  const { PDFName, PDFDict, PDFString, PDFHexString } = L(); if (!props) return '';
+  const d = doc.context.lookup(props.get(PDFName.of(key))); if (!(d instanceof PDFDict)) return '';
+  let nm = doc.context.lookup(d.get(PDFName.of('Name')));
+  if (!nm) { const ocgs = doc.context.lookup(d.get(PDFName.of('OCGs'))); if (ocgs instanceof PDFDict) nm = doc.context.lookup(ocgs.get(PDFName.of('Name'))); }
+  try { return nm && (nm instanceof PDFString || nm instanceof PDFHexString) ? nm.decodeText() : ''; } catch (e) { return ''; }
+}
+function bdcStart(m, idx) {   // m = chuỗi đã mask; tìm vị trí bắt đầu toán hạng của BDC tại idx
+  let j = idx - 1; const ws = c => /\s/.test(c);
+  while (j >= 0 && ws(m[j])) j--;
+  if (m[j] === '>' && m[j - 1] === '>') { let d = 0; for (; j >= 1; j--) { if (m[j] === '>' && m[j - 1] === '>') { d++; j--; } else if (m[j] === '<' && m[j - 1] === '<') { d--; j--; if (d === 0) { j--; break; } } } }
+  else { while (j >= 0 && !ws(m[j]) && m[j] !== '/') j--; if (m[j] === '/') j--; }
+  while (j >= 0 && ws(m[j])) j--;
+  while (j >= 0 && !ws(m[j]) && m[j] !== '/') j--;
+  return Math.max(0, m[j] === '/' ? j : j + 1);
+}
+function markedBlocks(doc, page, s, m, kw) {
+  const res = pageResources(doc, page), props = subDict(doc, res, 'Properties');
+  const re = /(^|[\s>\])])(BDC|BMC|EMC)(?=[\s/<[(]|$)/g, stack = [], found = []; let mt;
+  while ((mt = re.exec(m))) {
+    const idx = mt.index + mt[1].length, op = mt[2];
+    if (op === 'EMC') { const st = stack.pop(); if (st && st.wm) found.push([st.start, idx + 3, st.why]); }
+    else if (op === 'BMC') stack.push({ start: idx, wm: false });
+    else {
+      const start = bdcStart(m, idx), operands = s.slice(start, idx); let wm = false, why = '';
+      if (/\/Subtype\s*\/Watermark/.test(operands) || /\/Watermark\b/.test(operands.split('<<')[0] || '')) { wm = true; why = 'artifact'; }
+      else { const pm = /\/(\S+)\s*\/(\S+)\s*$/.exec(operands.trim()); if (pm && pm[1] === 'OC') { const nm = ocgName(doc, props, pm[2]); if (/watermark|bản quyền|ban quyen/i.test(nm) || (kw && nm.toLowerCase().includes(kw))) { wm = true; why = 'layer'; } } }
+      stack.push({ start, wm, why });
+    }
+  }
+  found.sort((a, b) => a[0] - b[0]);
+  const top = []; for (const f of found) if (!top.length || f[0] >= top[top.length - 1][1]) top.push(f);
+  return top;
+}
+function decodeLiteral(lit) {
+  return lit.replace(/\\([nrtbf()\\]|[0-7]{1,3}|\r?\n)/g, (_, g) => g === 'n' ? '\n' : g === 'r' ? '\r' : g === 't' ? '\t' : g === 'b' ? '\b' : g === 'f' ? '\f' : /^[0-7]/.test(g) ? String.fromCharCode(parseInt(g, 8)) : /^\r?\n$/.test(g) ? '' : g);
+}
+function textBlocks(s, m, phrase) {
+  const out = [], ph = phrase.toLowerCase().replace(/\s+/g, ''); const re = /(^|[\s>\])])BT(?=[\s/<[(])/g; let mt;
+  while ((mt = re.exec(m))) {
+    const a = mt.index + mt[1].length, er = /(^|[\s>\])])ET(?=[\s/<[(]|$)/g; er.lastIndex = a + 2; const em = er.exec(m); if (!em) break;
+    const b = em.index + em[1].length + 2, blk = s.slice(a, b); let all = '';
+    for (const x of blk.matchAll(/\(((?:\\[\s\S]|[^\\()])*)\)|<([0-9A-Fa-f\s]+)>/g)) {
+      if (x[1] !== undefined) all += decodeLiteral(x[1]);
+      else { const hx = x[2].replace(/\s+/g, ''), bytes = hx.match(/../g) || []; const raw = bytes.map(h => parseInt(h, 16));
+        all += raw.filter(v => v).map(v => String.fromCharCode(v)).join('');
+        if (raw.length % 2 === 0) all += '\u0001' + raw.reduce((t, v, i) => (i % 2 ? t + String.fromCharCode((raw[i - 1] << 8) | v) : t), ''); }
+    }
+    if (all.toLowerCase().replace(/\s+/g, '').includes(ph)) out.push([a, b]);
+    re.lastIndex = b;
+  }
+  return out;
+}
+function xobjDos(doc, page, s, m) {   // [{name, ref/key, start, end}]
+  const { PDFName, PDFRef } = L(), res = pageResources(doc, page), xo = subDict(doc, res, 'XObject'), out = [];
+  if (!xo) return out;
+  const re = /\/([^\s/<>[\]()]+)\s+Do(?=[\s/<[(]|$)/g; let mt;
+  while ((mt = re.exec(m))) {
+    const nm = mt[1].replace(/#([0-9A-Fa-f]{2})/g, (_, h) => String.fromCharCode(parseInt(h, 16))), raw = xo.get(PDFName.of(nm));
+    if (!raw) continue;
+    const obj = doc.context.lookup(raw);
+    out.push({ name: nm, key: raw instanceof PDFRef ? raw.tag : null, obj, start: mt.index, end: mt.index + mt[0].length });
+  }
+  return out;
+}
+PS.scanWatermarks = async function (bytes, pw) {
+  const { PDFName, PDFNumber } = L(), doc = await PS.loadPdf(bytes, pw), pages = doc.getPages(), cand = new Map();
+  let tagged = 0, layers = 0, annots = 0;
+  pages.forEach(page => {
+    const s = pageContentBytes(doc, page), m = maskContent(s);
+    for (const b of markedBlocks(doc, page, s, m, '')) b[2] === 'artifact' ? tagged++ : layers++;
+    const seen = new Set();
+    for (const d of xobjDos(doc, page, s, m)) {
+      if (!d.key || seen.has(d.key)) continue; seen.add(d.key);
+      const st = nameOf(d.obj.dict ? d.obj.dict.get(PDFName.of('Subtype')) : null);
+      let e = cand.get(d.key); if (!e) { const wd = d.obj.dict && d.obj.dict.lookup(PDFName.of('Width'), PDFNumber); const hd = d.obj.dict && d.obj.dict.lookup(PDFName.of('Height'), PDFNumber); e = { id: d.key, type: st || '?', w: wd ? wd.asNumber() : 0, h: hd ? hd.asNumber() : 0, pages: 0, name: d.name }; cand.set(d.key, e); }
+      e.pages++;
+    }
+    const an = page.node.Annots && page.node.Annots();
+    if (an) for (let i = 0; i < an.size(); i++) { const a = doc.context.lookup(an.get(i)); if (a && a.get && nameOf(a.get(PDFName.of('Subtype'))) === 'Watermark') annots++; }
+  });
+  const N = pages.length, need = Math.max(2, Math.ceil(N * 0.5));
+  const candidates = [...cand.values()].filter(c => c.pages >= need && (c.type === 'Image' || c.type === 'Form')).sort((a, b) => b.pages - a.pages);
+  return { pages: N, tagged, layers, annots, candidates };
+};
+PS.removeWatermarks = async function (bytes, o = {}) {
+  const { PDFName, PDFArray } = L(), doc = await PS.loadPdf(bytes, o.pw), pages = doc.getPages(), sel = new Set(PS.pageList(o.pages, pages.length));
+  const stat = { marked: 0, text: 0, xobj: 0, annots: 0 }, kw = (o.keyword || '').toLowerCase(), phrase = (o.text || '').trim(), chosen = new Set(o.xobjs || []);
+  pages.forEach((page, pi) => {
+    if (!sel.has(pi + 1)) return;
+    let s = pageContentBytes(doc, page), m = maskContent(s), ranges = [];
+    if (o.marked !== false) for (const [a, b] of markedBlocks(doc, page, s, m, kw)) { ranges.push([a, b]); stat.marked++; }
+    if (phrase) for (const [a, b] of textBlocks(s, m, phrase)) { ranges.push([a, b]); stat.text++; }
+    if (chosen.size) for (const d of xobjDos(doc, page, s, m)) if (d.key && chosen.has(d.key)) { ranges.push([d.start, d.end]); stat.xobj++; }
+    if (ranges.length) {
+      ranges.sort((a, b) => a[0] - b[0]); let out = '', pos = 0;
+      for (const [a, b] of ranges) { if (a < pos) continue; out += s.slice(pos, a) + '\n'; pos = b; }
+      out += s.slice(pos); setPageContent(doc, page, out);
+    }
+    if (o.annots !== false) {
+      const an = page.node.Annots && page.node.Annots();
+      if (an) { const keep = []; for (let i = 0; i < an.size(); i++) { const a = doc.context.lookup(an.get(i)); if (a && a.get && nameOf(a.get(PDFName.of('Subtype'))) === 'Watermark') stat.annots++; else keep.push(an.get(i)); }
+        if (keep.length !== an.size()) page.node.set(PDFName.of('Annots'), doc.context.obj(keep)); }
+    }
+  });
+  return { bytes: await PS.save(doc), stat };
+};
+
+/* ---------- ảnh <-> PDF, rasterize ---------- */
+PS.toPngBytes = async function (blob) {
+  const bmp = await createImageBitmap(blob), cv = document.createElement('canvas'); cv.width = bmp.width; cv.height = bmp.height;
+  const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height); ctx.drawImage(bmp, 0, 0);
+  return new Uint8Array(await (await new Promise(r => cv.toBlob(r, 'image/png'))).arrayBuffer());
+};
+PS.imagesToPdf = async function (imgs, o = {}) {
+  const { PDFDocument } = L(), doc = await PDFDocument.create();
+  for (const im of imgs) {
+    let bytes = im.bytes, type = im.type;
+    if (type !== 'png' && type !== 'jpg') { bytes = await PS.toPngBytes(new Blob([bytes])); type = 'png'; }
+    const img = type === 'png' ? await doc.embedPng(bytes) : await doc.embedJpg(bytes);
+    if (o.size === 'a4') {
+      const W = 595.28, H = 841.89, m = +o.margin || 20, sc = Math.min((W - 2 * m) / img.width, (H - 2 * m) / img.height, 10), w = img.width * sc, h = img.height * sc;
+      const pg = doc.addPage([W, H]); pg.drawImage(img, { x: (W - w) / 2, y: (H - h) / 2, width: w, height: h });
+    } else { const pg = doc.addPage([img.width, img.height]); pg.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height }); }
+  }
+  return PS.save(doc);
+};
+PS.renderPage = async function (pdf, num, scale) {
+  const page = await pdf.getPage(num), vp = page.getViewport({ scale }), cv = document.createElement('canvas');
+  cv.width = Math.ceil(vp.width); cv.height = Math.ceil(vp.height);
+  const ctx = cv.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, cv.width, cv.height);
+  await page.render({ canvasContext: ctx, canvas: cv, viewport: vp }).promise; return cv;
+};
+PS.pdfToImages = async function (bytes, base, o = {}) {
+  const pdf = await PS.openPdfjs(bytes, o.pw), list = PS.pageList(o.pages, pdf.numPages), res = [], fmt = o.format === 'jpg' ? 'jpg' : 'png';
+  for (const p of list) {
+    o.onProgress && o.onProgress(p, pdf.numPages);
+    const cv = await PS.renderPage(pdf, p, (+o.dpi || 150) / 72);
+    const blob = await new Promise(r => cv.toBlob(r, fmt === 'jpg' ? 'image/jpeg' : 'image/png', 0.92));
+    res.push({ name: `${base}_tr${String(p).padStart(String(pdf.numPages).length, '0')}.${fmt}`, bytes: new Uint8Array(await blob.arrayBuffer()), mime: blob.type });
+  }
+  return res;
+};
+PS.rasterizeToPdf = async function (bytes, o = {}) {
+  const pdf = await PS.openPdfjs(bytes, o.pw), { PDFDocument } = L(), out = await PDFDocument.create();
+  for (let p = 1; p <= pdf.numPages; p++) {
+    o.onProgress && o.onProgress(p, pdf.numPages);
+    const cv = await PS.renderPage(pdf, p, (+o.dpi || 150) / 72), blob = await new Promise(r => cv.toBlob(r, 'image/jpeg', 0.9));
+    const img = await out.embedJpg(new Uint8Array(await blob.arrayBuffer())), pg = out.addPage([cv.width * 72 / (+o.dpi || 150), cv.height * 72 / (+o.dpi || 150)]);
+    pg.drawImage(img, { x: 0, y: 0, width: pg.getWidth(), height: pg.getHeight() });
+  }
+  return PS.save(out);
+};
+})();
+
+/* ===== 03-docx2pdf: Word (.docx) -> PDF bằng bộ dàn trang tự viết (pdf-lib) ===== */
+(function () {
+const PS = (window.PS = window.PS || {});
+const NSW = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+const kids = (el, n) => (el ? Array.from(el.children).filter(c => c.localName === n) : []);
+const kid = (el, n) => kids(el, n)[0] || null;
+const attr = (el, n) => (el ? el.getAttributeNS(NSW, n) ?? el.getAttribute('w:' + n) : null);
+const num = v => (v === null || v === undefined || v === '' ? undefined : +v);
+const flag = el => (el ? !['0', 'false', 'off'].includes(attr(el, 'val')) : undefined);
+const merge = (a, b) => { for (const k in b) if (b[k] !== undefined) a[k] = b[k]; return a; };
+
+function parsePPr(el) {
+  const r = {}; if (!el) return r;
+  const sp = kid(el, 'spacing'); if (sp) { r.before = num(attr(sp, 'before')); r.after = num(attr(sp, 'after')); r.line = num(attr(sp, 'line')); r.lineRule = attr(sp, 'lineRule') || undefined; }
+  const ind = kid(el, 'ind'); if (ind) { r.left = num(attr(ind, 'left') ?? attr(ind, 'start')); r.right = num(attr(ind, 'right') ?? attr(ind, 'end')); r.hanging = num(attr(ind, 'hanging')); r.firstLine = num(attr(ind, 'firstLine')); }
+  const jc = kid(el, 'jc'); if (jc) r.jc = attr(jc, 'val');
+  r.keepNext = flag(kid(el, 'keepNext')); r.pbb = flag(kid(el, 'pageBreakBefore'));
+  const np = kid(el, 'numPr'); if (np) { const a = kid(np, 'numId'), b = kid(np, 'ilvl'); if (a) r.numId = attr(a, 'val'); if (b) r.ilvl = +attr(b, 'val'); }
+  const ol = kid(el, 'outlineLvl'); if (ol) r.outline = +attr(ol, 'val');
+  return r;
+}
+function parseRPr(el) {
+  const r = {}; if (!el) return r;
+  r.b = flag(kid(el, 'b')); r.i = flag(kid(el, 'i')); r.caps = flag(kid(el, 'caps')); r.strike = flag(kid(el, 'strike'));
+  const u = kid(el, 'u'); if (u) r.u = attr(u, 'val') !== 'none';
+  const sz = kid(el, 'sz'); if (sz) r.sz = +attr(sz, 'val') / 2;
+  const c = kid(el, 'color'); if (c && /^[0-9a-f]{6}$/i.test(attr(c, 'val') || '')) r.color = attr(c, 'val');
+  const va = kid(el, 'vertAlign'); if (va) r.va = attr(va, 'val');
+  return r;
+}
+const hexRgb = h => { const v = parseInt(h || '000000', 16); return PDFLib.rgb(((v >> 16) & 255) / 255, ((v >> 8) & 255) / 255, (v & 255) / 255); };
+const toRoman = n => { const t = [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]; let s = ''; for (const [v, r] of t) while (n >= v) { s += r; n -= v; } return s; };
+const toLetter = n => { let s = ''; while (n > 0) { n--; s = String.fromCharCode(97 + (n % 26)) + s; n = Math.floor(n / 26); } return s; };
+function fmtNum(n, fmt) {
+  switch (fmt) { case 'upperRoman': return toRoman(n); case 'lowerRoman': return toRoman(n).toLowerCase(); case 'upperLetter': return toLetter(n).toUpperCase(); case 'lowerLetter': return toLetter(n); case 'decimalZero': return String(n).padStart(2, '0'); default: return String(n); }
+}
+
+PS.docxToPdf = async function (bytes, o = {}) {
+  const zip = await JSZip.loadAsync(bytes), warns = new Set();
+  if (!zip.file('word/document.xml')) throw new Error('Không phải file .docx hợp lệ (file .doc cũ chưa hỗ trợ — hãy mở bằng Word và Lưu thành .docx).');
+  const parse = async p => { const f = zip.file(p); return f ? new DOMParser().parseFromString(await f.async('string'), 'application/xml') : null; };
+  const dDoc = await parse('word/document.xml'), dSty = await parse('word/styles.xml'), dNum = await parse('word/numbering.xml'), dRel = await parse('word/_rels/document.xml.rels');
+  const rels = {}; if (dRel) for (const r of Array.from(dRel.documentElement.children)) rels[r.getAttribute('Id')] = r.getAttribute('Target');
+
+  /* --- styles --- */
+  const styles = {}; let defP = {}, defR = {}, defaultPara = null;
+  if (dSty) {
+    const dd = kid(dSty.documentElement, 'docDefaults');
+    if (dd) { defR = parseRPr(kid(kid(dd, 'rPrDefault'), 'rPr')); defP = parsePPr(kid(kid(dd, 'pPrDefault'), 'pPr')); }
+    for (const s of kids(dSty.documentElement, 'style')) {
+      const id = attr(s, 'styleId'), nm = kid(s, 'name'), bo = kid(s, 'basedOn');
+      styles[id] = { id, type: attr(s, 'type'), name: nm ? attr(nm, 'val') : id, basedOn: bo ? attr(bo, 'val') : null, p: parsePPr(kid(s, 'pPr')), r: parseRPr(kid(s, 'rPr')), tblBorders: !!kid(kid(s, 'tblPr'), 'tblBorders') };
+      if (attr(s, 'default') === '1' && attr(s, 'type') === 'paragraph') defaultPara = id;
+    }
+  }
+  const chain = id => { const out = []; let g = 0; while (id && styles[id] && g++ < 20) { out.unshift(styles[id]); id = styles[id].basedOn; } return out; };
+  const styleP = id => chain(id).reduce((a, s) => merge(a, s.p), {});
+  const styleR = id => chain(id).reduce((a, s) => merge(a, s.r), {});
+
+  /* --- numbering --- */
+  const absN = {}, numMap = {}, counters = {};
+  if (dNum) {
+    for (const a of kids(dNum.documentElement, 'abstractNum')) {
+      const lv = {};
+      for (const l of kids(a, 'lvl')) {
+        const il = +attr(l, 'ilvl'), st = kid(l, 'start'), nf = kid(l, 'numFmt'), lt = kid(l, 'lvlText'), lr = kid(l, 'lvlRestart'), su = kid(l, 'suff');
+        lv[il] = { start: st ? +attr(st, 'val') : 1, fmt: nf ? attr(nf, 'val') : 'decimal', text: lt ? attr(lt, 'val') : '', restart: lr ? attr(lr, 'val') : null, suff: su ? attr(su, 'val') : 'tab', p: parsePPr(kid(l, 'pPr')) };
+      }
+      absN[attr(a, 'abstractNumId')] = lv;
+    }
+    for (const n of kids(dNum.documentElement, 'num')) { const ab = kid(n, 'abstractNumId'); numMap[attr(n, 'numId')] = ab ? attr(ab, 'val') : null; }
+  }
+  function numLabel(numId, il) {
+    const lv = absN[numMap[numId]]; if (!lv || !lv[il]) return null;
+    const c = counters[numId] || (counters[numId] = []);
+    for (let d = 0; d <= il; d++) if (c[d] === undefined) c[d] = (lv[d] ? lv[d].start : 1) - 1;
+    c[il]++;
+    for (let d = il + 1; d < 9; d++) if (c[d] !== undefined && !(lv[d] && lv[d].restart === '0')) c[d] = (lv[d] ? lv[d].start : 1) - 1;
+    const L = lv[il];
+    if (L.fmt === 'bullet') return { text: /[\uF000-\uF0FF]|^$/.test(L.text) ? '•' : L.text, lv: L };
+    return { text: L.text.replace(/%(\d)/g, (_, d) => { const k = +d - 1, cl = lv[k]; return cl ? fmtNum(Math.max(c[k] ?? cl.start, cl.start), cl.fmt) : ''; }), lv: L };
+  }
+
+  /* --- trang --- */
+  const body = kid(dDoc.documentElement, 'body'), sects = Array.from(dDoc.getElementsByTagNameNS(NSW, 'sectPr'));
+  const sect = sects[sects.length - 1];
+  let PW = 595.3, PH = 841.9, ML = 85, MR = 56.7, MT = 56.7, MB = 56.7;
+  if (sect) {
+    const sz = kid(sect, 'pgSz'), mg = kid(sect, 'pgMar');
+    if (sz) { PW = +attr(sz, 'w') / 20 || PW; PH = +attr(sz, 'h') / 20 || PH; }
+    if (mg) { ML = +attr(mg, 'left') / 20 || ML; MR = +attr(mg, 'right') / 20 || MR; MT = +attr(mg, 'top') / 20 || MT; MB = +attr(mg, 'bottom') / 20 || MB; }
+  }
+  const CW = PW - ML - MR;
+
+  /* --- khối nội dung --- */
+  const blocks = []; let tocDepth = 0, inToc = false, tocLevels = 3;
+  const imgCache = {};
+  async function readImage(rid) {
+    const t = rels[rid]; if (!t) return null;
+    if (imgCache[rid] !== undefined) return imgCache[rid];
+    const p = 'word/' + t.replace(/^\.?\//, ''), f = zip.file(p); let r = null;
+    if (f) { const ext = (p.split('.').pop() || '').toLowerCase(); if (ext === 'png' || ext === 'jpg' || ext === 'jpeg') r = { type: ext === 'png' ? 'png' : 'jpg', bytes: await f.async('uint8array') }; else warns.add('Có ảnh định dạng .' + ext + ' chưa được hỗ trợ (bỏ qua).'); }
+    return (imgCache[rid] = r);
+  }
+  async function parseParagraph(p) {
+    const pst = kid(kid(p, 'pPr'), 'pStyle'), sid = pst ? attr(pst, 'val') : defaultPara;
+    const sp = styleP(sid), sr = merge(merge({}, defR), styleR(sid)), direct = parsePPr(kid(p, 'pPr'));
+    const eff = merge(merge({}, defP), sp);
+    const numId = direct.numId !== undefined ? direct.numId : sp.numId, il = direct.ilvl !== undefined ? direct.ilvl : (sp.ilvl || 0);
+    let label = null;
+    const instr = Array.from(p.getElementsByTagNameNS(NSW, 'instrText')).map(x => x.textContent).join(' ');
+    const fld = Array.from(p.getElementsByTagNameNS(NSW, 'fldChar')).map(x => attr(x, 'fldCharType'));
+    const begins = fld.filter(x => x === 'begin').length, ends = fld.filter(x => x === 'end').length;
+    if (!inToc && /^\s*TOC\b/.test(instr)) { const m = /\\o\s+"?(\d)-(\d)/.exec(instr); tocLevels = m ? +m[2] : 3; inToc = true; tocDepth = 0; const pv = blocks[blocks.length - 1]; if (pv && pv.type === 'para' && /^(mục lục|table of contents|contents)$/i.test(pv.toks.filter(t => t.k === 't').map(t => t.text).join('').trim())) blocks.pop(); blocks.push({ type: 'toc', levels: tocLevels }); }
+    if (inToc) { tocDepth += begins - ends; if (tocDepth <= 0) inToc = false; return; }
+    if (numId && numId !== '0') { const nl = numLabel(numId, il); if (nl) { label = nl; const lp = nl.lv.p; if (direct.left === undefined && lp.left !== undefined) { eff.left = lp.left; eff.hanging = lp.hanging; eff.firstLine = lp.firstLine; } } }
+    merge(eff, direct); if (label && direct.left === undefined && direct.hanging === undefined && sp.left !== undefined && label.lv.p.left !== undefined) { eff.left = label.lv.p.left; eff.hanging = label.lv.p.hanging; }
+    const nm = (styles[sid] && styles[sid].name) || '', hm = /^heading\s*(\d)/i.exec(nm);
+    const level = hm ? +hm[1] : (eff.outline !== undefined ? eff.outline + 1 : 0);
+    const isTitle = /^title$/i.test(nm);
+    const toks = [];
+    const addRun = async (r) => {
+      const rr = merge(merge({}, sr), styleR(attr(kid(kid(r, 'rPr'), 'rStyle'), 'val'))); merge(rr, parseRPr(kid(r, 'rPr')));
+      for (const c of Array.from(r.children)) {
+        if (c.localName === 't') toks.push({ k: 't', text: rr.caps ? c.textContent.toUpperCase() : c.textContent, r: rr });
+        else if (c.localName === 'tab') toks.push({ k: 'tab', r: rr });
+        else if (c.localName === 'br') { if (attr(c, 'type') === 'page') toks.push({ k: 'pb' }); else toks.push({ k: 'nl', r: rr }); }
+        else if (c.localName === 'noBreakHyphen') toks.push({ k: 't', text: '-', r: rr });
+        else if (c.localName === 'drawing' || c.localName === 'pict') {
+          const blip = c.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/main', 'blip')[0], ext = c.getElementsByTagNameNS('http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing', 'extent')[0];
+          if (blip && ext) { const rid = blip.getAttributeNS('http://schemas.openxmlformats.org/officeDocument/2006/relationships', 'embed'), im = await readImage(rid); if (im) toks.push({ k: 'img', im, w: +ext.getAttribute('cx') / 12700, h: +ext.getAttribute('cy') / 12700 }); }
+          else warns.add('Có hình vẽ/đối tượng không phải ảnh (bỏ qua).');
+        }
+      }
+    };
+    for (const c of Array.from(p.children)) {
+      if (c.localName === 'r') await addRun(c);
+      else if (['hyperlink', 'ins', 'smartTag', 'sdt', 'fldSimple'].includes(c.localName)) for (const r of c.getElementsByTagNameNS(NSW, 'r')) await addRun(r);
+    }
+    if (inToc === false && !toks.length && !label && !eff.pbb) { blocks.push({ type: 'empty', eff, sr }); return; }
+    blocks.push({ type: 'para', eff, sr, toks, label, level, isTitle });
+  }
+  async function parseTable(t) {
+    const grid = kids(kid(t, 'tblGrid'), 'gridCol').map(g => +attr(g, 'w') / 20), tp = kid(t, 'tblPr'), ts = kid(tp, 'tblStyle');
+    const bordered = !!kid(tp, 'tblBorders') || (ts && styles[attr(ts, 'val')] && (styles[attr(ts, 'val')].tblBorders || /grid/i.test(styles[attr(ts, 'val')].name)));
+    const rows = [];
+    for (const tr of kids(t, 'tr')) {
+      const cells = [];
+      for (const tc of kids(tr, 'tc')) {
+        const pr = kid(tc, 'tcPr'), gs = kid(pr, 'gridSpan'), vm = kid(pr, 'vMerge'), sh = kid(pr, 'shd');
+        const save = blocks.length; for (const ch of kids(tc, 'p')) await parseParagraph(ch);
+        const inner = blocks.splice(save);
+        cells.push({ span: gs ? +attr(gs, 'val') : 1, vmCont: !!vm && attr(vm, 'val') !== 'restart', fill: sh && /^[0-9a-f]{6}$/i.test(attr(sh, 'fill') || '') ? attr(sh, 'fill') : null, blocks: inner, bordered: bordered || !!kid(pr, 'tcBorders') });
+      }
+      rows.push(cells);
+    }
+    blocks.push({ type: 'table', grid, rows });
+  }
+  for (const c of Array.from(body.children)) { if (c.localName === 'p') await parseParagraph(c); else if (c.localName === 'tbl') await parseTable(c); }
+
+  /* --- font --- */
+  const doc = await PDFLib.PDFDocument.create(), fonts = PS.makeFonts(doc), F = {};
+  for (const v of ['regular', 'bold', 'italic', 'bolditalic']) F[v] = await fonts.get(v);
+  if (!fonts.uni) warns.add('Chưa nạp được font Unicode: chữ tiếng Việt bị bỏ dấu. Hãy chọn font .ttf ở phần Cài đặt font.');
+  const safe = t => { t = fonts.fit(t).replace(/[\u00A0\u2007\u202F]/g, ' '); return fonts.uni ? t : t.replace(/[^\x20-\x7E\u00A1-\u00FF•–—…‘’“”€]/g, '?'); };
+  const variant = r => (r.b && r.i ? 'bolditalic' : r.b ? 'bold' : r.i ? 'italic' : 'regular');
+  const wOf = (t, v, sz) => F[v].widthOfTextAtSize(t, sz);
+
+  /* --- dàn trang (2 lượt để có số trang cho mục lục) --- */
+  function layout(tocPages) {
+    const pages = [{ ops: [] }], heads = []; let y = MT, cur = 0;
+    const bottom = PH - MB;
+    const newPage = () => { pages.push({ ops: [] }); cur++; y = MT; };
+    const ops = () => pages[cur].ops;
+
+    function tokenize(toks, label, labelRun, hasHang) {
+      const out = [];
+      const pushText = (text, r, v) => {
+        const sz = (r.sz || defR.sz || 11) * (r.va ? 0.7 : 1);
+        for (const part of safe(text).split(/(\s+)/)) {
+          if (part === '') continue;
+          if (/^\s+$/.test(part)) out.push({ sp: true, w: wOf(' ', v, sz), sz, v });
+          else out.push({ t: part, w: wOf(part, v, sz), sz, v, color: r.color, u: r.u, st: r.strike, va: r.va });
+        }
+      };
+      if (label && !hasHang) pushText(label.text + (label.lv.suff === 'space' || label.lv.suff === 'tab' ? ' ' : ''), labelRun, variant(labelRun));
+      for (const t of toks) {
+        if (t.k === 't') pushText(t.text, t.r, variant(t.r));
+        else if (t.k === 'tab') out.push({ tab: true, w: 0, sz: t.r.sz || 11, v: variant(t.r) });
+        else if (t.k === 'nl') out.push({ nl: true, w: 0, sz: t.r.sz || 11, v: 'regular' });
+        else if (t.k === 'img') { const sc = Math.min(1, CW / t.w); out.push({ img: t.im, w: t.w * sc, h: t.h * sc, sz: t.h * sc, v: 'regular' }); }
+      }
+      return out;
+    }
+    function breakLines(toks, wFirst, wRest, x0First, x0Rest) {
+      const lines = []; let line = { items: [], w: 0 }, avail = wFirst, base = x0First;
+      const flush = (hard) => { while (line.items.length && line.items[line.items.length - 1].sp) { line.w -= line.items.pop().w; } line.hard = hard; lines.push(line); line = { items: [], w: 0 }; avail = wRest; base = x0Rest; };
+      for (const t of toks) {
+        if (t.nl) { flush(true); continue; }
+        if (t.tab) { const rel = line.w + (base - x0Rest), stop = (Math.floor(rel / 36) + 1) * 36; t.w = Math.max(6, stop - rel); line.items.push(t); line.w += t.w; continue; }
+        if (t.sp && !line.items.length) continue;
+        if (!t.sp && line.w + t.w > avail + 0.01 && line.items.length) flush(false);
+        if (!t.sp && t.w > avail && !line.items.length && t.t) {         // từ dài hơn cả dòng: cắt theo ký tự
+          let rest = t.t; while (rest) { let n = rest.length; while (n > 1 && wOf(rest.slice(0, n), t.v, t.sz) > avail) n--; const piece = rest.slice(0, n); line.items.push(Object.assign({}, t, { t: piece, w: wOf(piece, t.v, t.sz) })); line.w += line.items[line.items.length - 1].w; rest = rest.slice(n); if (rest) flush(false); }
+          continue;
+        }
+        line.items.push(t); line.w += t.w;
+      }
+      if (line.items.length || !lines.length) flush(true);
+      return lines;
+    }
+    function lineMetrics(ln, eff) {
+      let sz = 0, img = 0; for (const t of ln.items) { sz = Math.max(sz, t.sz || 0); if (t.img) img = Math.max(img, t.h); }
+      sz = sz || (defR.sz || 11);
+      const mult = eff.line && (!eff.lineRule || eff.lineRule === 'auto') ? eff.line / 240 : 1;
+      let h = Math.max(sz * 1.15 * mult, img + 2);
+      if (eff.line && (eff.lineRule === 'exact' || eff.lineRule === 'atLeast')) h = eff.lineRule === 'exact' ? eff.line / 20 : Math.max(eff.line / 20, h);
+      return { sz, h, base: Math.max(img, sz * 0.95) + (h - Math.max(sz * 1.15, img)) / 2 };
+    }
+    function emit(ln, eff, x0, top, width, isLast, m) {
+      let x = x0; const base = top + m.base, jc = eff.jc;
+      const spaces = ln.items.filter(t => t.sp).length;
+      let extra = 0;
+      if (jc === 'center') x += (width - ln.w) / 2; else if (jc === 'right' || jc === 'end') x += width - ln.w;
+      else if ((jc === 'both' || jc === 'distribute') && !isLast && !ln.hard && spaces) extra = (width - ln.w) / spaces;
+      for (const t of ln.items) {
+        if (t.img) { ops().push({ t: 'img', im: t.img, x, y: base - t.h, w: t.w, h: t.h }); x += t.w; continue; }
+        if (t.t) {
+          const dy = t.va === 'superscript' ? -t.sz * 0.4 : t.va === 'subscript' ? t.sz * 0.2 : 0;
+          ops().push({ t: 'text', x, y: base + dy, text: t.t, v: t.v, sz: t.sz, color: t.color });
+          if (t.u) ops().push({ t: 'line', x1: x, x2: x + t.w, y: base + 1.5, c: t.color });
+          if (t.st) ops().push({ t: 'line', x1: x, x2: x + t.w, y: base - t.sz * 0.3, c: t.color });
+        }
+        x += t.w + (t.sp ? extra : 0);
+      }
+    }
+    // dàn một đoạn vào hộp (x0,width); trả về chiều cao (không ngắt trang) nếu measureOnly
+    function paragraph(B, x0, boxW, measureOnly) {
+      const eff = B.eff, left = (eff.left || 0) / 20, hang = (eff.hanging || 0) / 20, first = (eff.firstLine || 0) / 20, right = (eff.right || 0) / 20;
+      const hasHang = !!(B.label && hang > 0), labelX = left - hang + first, startFirst = hasHang ? left : left - hang + first;
+      const lr = B.sr; const toks = tokenize(B.toks, B.label, Object.assign({}, lr, { b: lr.b }), hasHang);
+      const lines = breakLines(toks, boxW - startFirst - right, boxW - left - right, startFirst, left);
+      const before = (eff.before || 0) / 20, after = (eff.after || 0) / 20;
+      const ms = lines.map(l => lineMetrics(l, eff));
+      if (measureOnly) return { h: ms.reduce((a, m) => a + m.h, 0) + before + after, lines, ms, before, after, eff, startFirst, left, right, hasHang, lbl: hasHang ? { text: safe(B.label.text), v: variant(lr), sz: ms[0].sz, color: lr.color, x: labelX } : null };
+      if (eff.pbb && ops().length) newPage();
+      const need = ms[0].h + (eff.keepNext ? 60 : 0);
+      if (y + Math.min(before, 12) + need > bottom && ops().length) newPage();
+      if (y > MT) y += before;
+      if (B.level >= 1) heads.push({ level: B.level, title: B.toks.filter(t => t.k === 't').map(t => t.text).join('').trim(), label: B.label ? B.label.text : '', page: cur });
+      lines.forEach((ln, i) => {
+        const m = ms[i];
+        if (y + m.h > bottom && ops().length) newPage();
+        const sx = x0 + (i === 0 ? startFirst : left);
+        if (i === 0 && hasHang) ops().push({ t: 'text', x: x0 + labelX, y: y + m.base, text: safe(B.label.text), v: variant(lr), sz: m.sz, color: lr.color });
+        emit(ln, eff, sx, y, boxW - (i === 0 ? startFirst : left) - right, i === lines.length - 1, m);
+        y += m.h;
+      });
+      y += after;
+    }
+    function table(B) {
+      const g = B.grid.length ? B.grid : B.rows[0].map(() => CW / B.rows[0].length), sum = g.reduce((a, b) => a + b, 0), sc = sum > CW ? CW / sum : 1, cols = g.map(w => w * sc);
+      const pad = 4;
+      for (const row of B.rows) {
+        let ci = 0; const cells = [];
+        for (const c of row) { const w = cols.slice(ci, ci + c.span).reduce((a, b) => a + b, 0) || cols[0]; cells.push({ c, x: cols.slice(0, ci).reduce((a, b) => a + b, 0), w }); ci += c.span; }
+        const meas = cells.map(cl => { let h = pad * 2; const parts = []; for (const b of cl.c.blocks) { if (b.type === 'para') { const r = paragraph(b, 0, cl.w - 2 * pad, true); parts.push(r); h += r.h; } else if (b.type === 'empty') h += 12; } return { h, parts }; });
+        const rh = Math.max(16, ...meas.map(m => m.h));
+        if (y + rh > bottom && ops().length) newPage();
+        cells.forEach((cl, i) => {
+          const x = ML + cl.x;
+          if (cl.c.fill) ops().push({ t: 'rect', x, y, w: cl.w, h: rh, fill: cl.c.fill });
+          if (cl.c.bordered) ops().push({ t: 'rect', x, y, w: cl.w, h: rh, stroke: true });
+          let yy = y + pad;
+          for (const r of meas[i].parts) {
+            yy += r.before;
+            if (r.lbl) ops().push({ t: 'text', x: x + pad + r.lbl.x, y: yy + r.ms[0].base, text: r.lbl.text, v: r.lbl.v, sz: r.lbl.sz, color: r.lbl.color });
+            r.lines.forEach((ln, k) => { const sx = x + pad + (k === 0 ? r.startFirst : r.left), m = r.ms[k]; emit(ln, r.eff, sx, yy, cl.w - 2 * pad - (k === 0 ? r.startFirst : r.left) - r.right, k === r.lines.length - 1, m); yy += m.h; });
+            yy += r.after;
+          }
+        });
+        y += rh;
+      }
+      y += 6;
+    }
+    for (const B of blocks) {
+      if (B.type === 'para') {
+        if (B.toks.some(t => t.k === 'pb')) {
+          const parts = []; let curr = []; for (const t of B.toks) { if (t.k === 'pb') { parts.push(curr); curr = []; } else curr.push(t); }
+          parts.push(curr);
+          parts.forEach((p, i) => { if (i > 0) newPage(); if (p.length || (i === 0 && B.label)) paragraph(Object.assign({}, B, { toks: p }), ML, CW, false); });
+        } else paragraph(B, ML, CW, false);
+      } else if (B.type === 'empty') { if (B.eff.pbb) newPage(); else y += 12 * 1.2; if (y > bottom) newPage(); }
+      else if (B.type === 'table') table(B);
+      else if (B.type === 'toc') {
+        const list = (tocPages || []).filter(h => h.level <= B.levels);
+        const titleB = { eff: { jc: 'center', after: 200, line: 240 }, sr: { b: true, sz: (defR.sz || 11) + 2 }, toks: [{ k: 't', text: 'MỤC LỤC', r: { b: true, sz: (defR.sz || 11) + 2 } }], label: null, level: 0 };
+        paragraph(titleB, ML, CW, false);
+        for (const h of list) {
+          const sz = defR.sz || 11, v = h.level === 1 ? 'bold' : 'regular', x0 = ML + (h.level - 1) * 14;
+          const txt = safe((h.label ? h.label + ' ' : '') + h.title), pg = String(h.pg || ''), pw = wOf(pg, v, sz);
+          let t = txt; while (wOf(t, v, sz) > CW - (h.level - 1) * 14 - pw - 30 && t.length > 4) t = t.slice(0, -2) + '…';
+          const tw = wOf(t, v, sz), lh = sz * 1.5;
+          if (y + lh > bottom) newPage();
+          ops().push({ t: 'text', x: x0, y: y + sz, text: t, v, sz });
+          const dw = wOf(' .', 'regular', sz), cnt = Math.floor((CW - pw - 4 - (x0 - ML) - tw - 8) / dw);
+          if (cnt > 0) ops().push({ t: 'text', x: x0 + tw + 6, y: y + sz, text: ' .'.repeat(cnt), v: 'regular', sz, color: '777777' });
+          ops().push({ t: 'text', x: ML + CW - pw, y: y + sz, text: pg, v, sz });
+          y += lh;
+        }
+        y += 10;
+      }
+    }
+    return { pages, heads };
+  }
+  /* lượt 1 dàn với số trang tạm, lượt 2 dùng số trang thật (số dòng mục lục không đổi) */
+  let res;
+  if (blocks.some(b => b.type === 'toc')) {
+    const guess = blocks.filter(b => b.type === 'para' && b.level >= 1).map(b => ({ level: b.level, title: b.toks.filter(t => t.k === 't').map(t => t.text).join('').trim(), label: b.label ? b.label.text : '', pg: '00' }));
+    const r1 = layout(guess);
+    res = layout(guess.map((h, i) => Object.assign({}, h, { pg: r1.heads[i] ? String(r1.heads[i].page + 1) : '' })));
+  } else res = layout(null);
+
+  /* --- vẽ ra PDF --- */
+  const out = res.pages.map(() => doc.addPage([PW, PH]));
+  res.pages.forEach((pg, i) => {
+    const page = out[i];
+    for (const op of pg.ops) {
+      if (op.t === 'text') page.drawText(op.text, { x: op.x, y: PH - op.y, size: op.sz, font: F[op.v], color: hexRgb(op.color) });
+      else if (op.t === 'line') page.drawLine({ start: { x: op.x1, y: PH - op.y }, end: { x: op.x2, y: PH - op.y }, thickness: 0.6, color: hexRgb(op.c) });
+      else if (op.t === 'rect') page.drawRectangle({ x: op.x, y: PH - op.y - op.h, width: op.w, height: op.h, ...(op.fill ? { color: hexRgb(op.fill) } : {}), ...(op.stroke ? { borderColor: PDFLib.rgb(0.2, 0.2, 0.2), borderWidth: 0.5 } : {}) });
+    }
+  });
+  // ảnh: nhúng sau (cần await)
+  const embedded = new Map();
+  for (let i = 0; i < res.pages.length; i++) for (const op of res.pages[i].ops) if (op.t === 'img') {
+    if (!embedded.has(op.im)) embedded.set(op.im, op.im.type === 'png' ? await doc.embedPng(op.im.bytes) : await doc.embedJpg(op.im.bytes));
+    out[i].drawImage(embedded.get(op.im), { x: op.x, y: PH - op.y - op.h, width: op.w, height: op.h });
+  }
+  if (o.bookmarks !== false) {
+    const hs = res.heads.filter(h => h.level >= 1).map(h => ({ level: h.level, title: ((h.label ? h.label + ' ' : '') + h.title).trim(), page: h.page + 1 }));
+    if (hs.length) PS.setOutline(doc, hs);
+  }
+  return { bytes: await PS.save(doc), warn: [...warns].join(' '), pages: res.pages.length };
+};
+})();
+
+/* ===== 04-ui: giao diện & định nghĩa các công cụ ===== */
+(function () {
+const PS = window.PS;
+const h = (tag, attrs, ...ch) => {
+  const e = document.createElement(tag);
+  for (const k in attrs || {}) { if (k === 'class') e.className = attrs[k]; else if (k.startsWith('on')) e[k] = attrs[k]; else if (attrs[k] !== false && attrs[k] != null) e.setAttribute(k, attrs[k] === true ? '' : attrs[k]); }
+  ch.flat().forEach(c => c != null && e.append(c.nodeType ? c : document.createTextNode(c)));
+  return e;
+};
+const $ = id => document.getElementById(id);
+const fmtSize = n => (n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB');
+const readBytes = async f => new Uint8Array(await f.arrayBuffer());
+const typeOf = f => { const n = f.name.toLowerCase(); return /\.png$/.test(n) ? 'png' : /\.jpe?g$/.test(n) ? 'jpg' : 'other'; };
+const WORD_MIME = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+/* ---------- ô nhập tùy chọn ---------- */
+function buildOpts(box, opts) {
+  const vals = {}, wraps = {}, fileVals = {};
+  const values = () => { const o = {}; opts.forEach(op => (o[op.id] = op.type === 'file' ? fileVals[op.id] : vals[op.id]())); return o; };
+  const refresh = () => { const v = values(); opts.forEach(op => { if (op.when) wraps[op.id].style.display = op.when(v) ? '' : 'none'; }); };
+  opts.forEach(op => {
+    let el, w;
+    if (op.type === 'select') { el = h('select', { onchange: refresh }, op.options.map(([v, l]) => h('option', { value: v }, l))); el.value = op.def ?? op.options[0][0]; vals[op.id] = () => el.value; }
+    else if (op.type === 'checkbox') { el = h('input', { type: 'checkbox', onchange: refresh }); el.checked = !!op.def; vals[op.id] = () => el.checked; }
+    else if (op.type === 'file') { el = h('input', { type: 'file', accept: op.accept, onchange: async () => { const f = el.files[0]; fileVals[op.id] = f ? { name: f.name, bytes: await readBytes(f), type: typeOf(f) } : null; refresh(); } }); fileVals[op.id] = null; }
+    else if (op.type === 'textarea') { el = h('textarea', { rows: 3, placeholder: op.ph || '' }); el.value = op.def ?? ''; vals[op.id] = () => el.value; }
+    else { el = h('input', { type: op.type === 'number' ? 'number' : op.type === 'color' ? 'color' : op.type === 'password' ? 'password' : 'text', placeholder: op.ph || '', min: op.min, max: op.max, step: op.step, oninput: refresh }); el.value = op.def ?? ''; if (op.w) el.style.width = op.w; vals[op.id] = () => (op.type === 'number' ? (el.value === '' ? undefined : +el.value) : el.value); }
+    w = op.type === 'checkbox' ? h('label', { class: 'chk' }, el, op.label) : h('label', {}, h('span', {}, op.label), el, op.hint ? h('small', {}, op.hint) : null);
+    wraps[op.id] = w; box.append(w);
+  });
+  refresh();
+  return { values, set: (id, v) => { const w = wraps[id], i = w.querySelector('input,select,textarea'); if (i.type === 'checkbox') i.checked = v; else i.value = v; refresh(); } };
+}
+
+/* ---------- vùng kết quả ---------- */
+const R = { items: [], errors: [], notes: [] };
+function renderResults() {
+  const box = $('results'); box.innerHTML = '';
+  if (R.notes.length) R.notes.forEach(n => box.append(h('div', { class: 'note' }, n)));
+  R.errors.forEach(e => box.append(h('div', { class: 'err' }, '✗ ' + e)));
+  if (R.items.length) {
+    box.append(h('div', { class: 'rhead' }, `Kết quả (${R.items.length} file)`, R.items.length > 1 ? h('button', { class: 'act', onclick: downloadZip }, 'Tải tất cả (.zip)') : null));
+    R.items.forEach(it => box.append(h('div', { class: 'ritem' }, h('span', { class: 'rname' }, it.name), h('span', { class: 'rsize' }, fmtSize(it.bytes.length)), it.note ? h('span', { class: 'rnote' }, it.note) : null, h('button', { class: 'sec', onclick: () => saveAs(it.bytes, it.name, it.mime) }, 'Tải xuống'))));
+  }
+}
+function saveAs(bytes, name, mime) {
+  const a = h('a', { href: URL.createObjectURL(new Blob([bytes], { type: mime || 'application/octet-stream' })), download: name });
+  document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 8000);
+}
+async function downloadZip() {
+  const z = new JSZip(), used = new Set();
+  R.items.forEach(it => { let n = it.name, k = 1; while (used.has(n)) n = it.name.replace(/(\.[^.]*)?$/, `_${++k}$1`); used.add(n); z.file(n, it.bytes); });
+  saveAs(await z.generateAsync({ type: 'uint8array', compression: 'DEFLATE' }), 'ket_qua.zip', 'application/zip');
+}
+const status = (t, p) => { $('status').textContent = t || ''; const b = $('bar'); b.style.display = p == null ? 'none' : ''; if (p != null) b.firstElementChild.style.width = Math.round(p * 100) + '%'; };
+
+/* ---------- danh sách file ---------- */
+function filePicker(tool, host) {
+  const list = [], listEl = h('div', { class: 'flist' });
+  const paint = () => {
+    listEl.innerHTML = '';
+    list.forEach((f, i) => listEl.append(h('div', { class: 'fitem' }, h('span', { class: 'fname' }, f.name), h('small', {}, fmtSize(f.bytes.length)),
+      tool.order && list.length > 1 ? h('button', { class: 'ico', title: 'Lên', onclick: () => { if (i) { [list[i - 1], list[i]] = [list[i], list[i - 1]]; paint(); } } }, '↑') : null,
+      tool.order && list.length > 1 ? h('button', { class: 'ico', title: 'Xuống', onclick: () => { if (i < list.length - 1) { [list[i + 1], list[i]] = [list[i], list[i + 1]]; paint(); } } }, '↓') : null,
+      h('button', { class: 'ico', title: 'Bỏ', onclick: () => { list.splice(i, 1); paint(); tool.onFiles && tool.onFiles(list); } }, '✕'))));
+  };
+  const add = async fl => {
+    const arr = [...fl].filter(f => new RegExp('(' + tool.accept.split(',').map(s => s.trim().replace('.', '\\.')).join('|') + ')$', 'i').test(f.name));
+    if (!arr.length) { status('Không có file đúng định dạng (' + tool.accept + ')'); return; }
+    if (!tool.multi) list.length = 0;
+    for (const f of arr) list.push({ name: f.name, bytes: await readBytes(f) });
+    paint(); status(''); tool.onFiles && tool.onFiles(list);
+  };
+  const input = h('input', { type: 'file', accept: tool.accept, multiple: !!tool.multi, onchange: () => { add(input.files); input.value = ''; } });
+  const drop = h('div', { class: 'drop', onclick: () => input.click() }, tool.multi ? 'Bấm hoặc kéo thả nhiều file vào đây' : 'Bấm hoặc kéo thả file vào đây', h('small', {}, tool.accept));
+  ['dragover', 'dragenter'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove('over'); }));
+  drop.addEventListener('drop', e => add(e.dataTransfer.files));
+  input.style.display = 'none'; host.append(drop, input, listEl);
+  return { list, add };
+}
+
+/* ---------- outline có sẵn ---------- */
+PS.readOutline = async function (bytes, pw) {
+  const pdf = await PS.openPdfjs(bytes, pw), out = [];
+  const walk = async (items, lvl) => { for (const it of items || []) { let page = 0; try { const d = typeof it.dest === 'string' ? await pdf.getDestination(it.dest) : it.dest; if (d) page = (await pdf.getPageIndex(d[0])) + 1; } catch (e) { /* */ } if (page) out.push({ level: lvl, title: it.title.trim(), orig: it.title.trim(), page, y: 0, kind: 'bookmark' }); await walk(it.items, lvl + 1); } };
+  await walk(await pdf.getOutline(), 1); return out;
+};
+
+/* ---------- định nghĩa công cụ ---------- */
+const PW = { id: 'pw', type: 'password', label: 'Mật khẩu mở file (nếu PDF có mật khẩu)', w: '220px' };
+const SCHEME_OPTS = Object.entries(PS.WORD_SCHEMES).map(([k, v]) => [k, v.label]).concat([['none', 'Giữ nguyên số trong tiêu đề (không đánh số tự động)']]);
+const WORD_OPTS = [
+  { id: 'scheme', type: 'select', label: 'Kiểu đánh số heading', options: SCHEME_OPTS },
+  { id: 'levels', type: 'number', label: 'Số cấp heading tối đa', def: 4, min: 1, max: 6, w: '80px' },
+  { id: 'font', type: 'text', label: 'Font', def: 'Times New Roman', w: '170px' },
+  { id: 'size', type: 'number', label: 'Cỡ chữ', def: 13, min: 9, max: 16, step: 0.5, w: '80px' },
+  { id: 'toc', type: 'checkbox', label: 'Chèn mục lục (tự cập nhật khi mở)', def: true },
+  { id: 'strip', type: 'checkbox', label: 'Bỏ số cũ trong tiêu đề (tránh đánh số hai lần)', def: true },
+];
+const stampOpts = (ctx, name, ext) => name.replace(/\.[^.]+$/, '') + ext;
+
+const TOOLS = [
+  { g: 'Chuyển đổi', id: 'pdf2docx', title: 'PDF → Word (hàng loạt)', desc: 'Nhận diện heading, xuất .docx có heading đa cấp đánh số. Chỉ lấy chữ và heading, không giữ bảng/ảnh/bố cục. PDF scan cần OCR trước.', accept: '.pdf', multi: true, pw: true,
+    opts: WORD_OPTS, run: async ctx => ctx.each(async (f, report) => {
+      const { lines } = await PS.extractLines(f.bytes, { password: ctx.pw, onProgress: (p, n) => report(p / n) });
+      if (!lines.length) throw new Error('PDF không có lớp chữ (bản scan?) — cần OCR trước.');
+      const { segs } = PS.detectHeadings(lines, ctx.o.levels);
+      ctx.add(PS.stem(f.name) + '.docx', await PS.buildDocx(segs, { scheme: ctx.o.scheme, levels: ctx.o.levels, font: ctx.o.font, size: ctx.o.size, toc: ctx.o.toc, strip: ctx.o.strip }), WORD_MIME);
+    }) },
+  { g: 'Chuyển đổi', id: 'docx2pdf', title: 'Word → PDF (hàng loạt)', desc: 'Dàn trang lại từ nội dung .docx (đoạn, heading + số thứ tự, bảng, ảnh PNG/JPG, mục lục) và tạo bookmark. Không giữ font gốc, header/footer, hộp văn bản, công thức… Cần giống hệt bản gốc thì dùng Lưu thành PDF trong Word.', accept: '.docx', multi: true,
+    opts: [{ id: 'bookmarks', type: 'checkbox', label: 'Tạo bookmark từ heading', def: true }],
+    run: async ctx => ctx.each(async f => { const r = await PS.docxToPdf(f.bytes, { bookmarks: ctx.o.bookmarks }); ctx.add(PS.stem(f.name) + '.pdf', r.bytes, 'application/pdf', `${r.pages} trang` + (r.warn ? ' · ' + r.warn : '')); }) },
+  { g: 'Chuyển đổi', id: 'pdf2img', title: 'PDF → Ảnh', desc: 'Xuất mỗi trang thành ảnh PNG/JPG.', accept: '.pdf', multi: true, pw: true,
+    opts: [{ id: 'format', type: 'select', label: 'Định dạng', options: [['png', 'PNG'], ['jpg', 'JPG']] }, { id: 'dpi', type: 'number', label: 'DPI', def: 150, min: 50, max: 400, w: '80px' }, { id: 'pages', type: 'text', label: 'Trang (để trống = tất cả)', ph: '1-3,5', w: '160px' }],
+    run: async ctx => ctx.each(async (f, report) => { for (const r of await PS.pdfToImages(f.bytes, PS.stem(f.name), { pw: ctx.pw, dpi: ctx.o.dpi, format: ctx.o.format, pages: ctx.o.pages, onProgress: (p, n) => report(p / n) })) ctx.add(r.name, r.bytes, r.mime); }) },
+  { g: 'Chuyển đổi', id: 'img2pdf', title: 'Ảnh → PDF', desc: 'Ghép nhiều ảnh (PNG/JPG/WebP/BMP/GIF) thành một PDF theo thứ tự trong danh sách.', accept: '.png,.jpg,.jpeg,.webp,.bmp,.gif', multi: true, order: true,
+    opts: [{ id: 'size', type: 'select', label: 'Khổ trang', options: [['fit', 'Theo kích thước ảnh'], ['a4', 'A4 (ảnh căn giữa)']] }, { id: 'margin', type: 'number', label: 'Lề (pt, khi chọn A4)', def: 20, w: '80px' }],
+    run: async ctx => { const imgs = ctx.files.map(f => ({ bytes: f.bytes, type: typeOf(f) })); ctx.add('anh_gop.pdf', await PS.imagesToPdf(imgs, ctx.o), 'application/pdf'); } },
+
+  { g: 'Cắt ghép', id: 'merge', title: 'Gộp PDF', desc: 'Gộp nhiều file theo thứ tự trong danh sách (dùng nút ↑ ↓ để đổi thứ tự).', accept: '.pdf', multi: true, order: true, pw: true,
+    opts: [{ id: 'bookmarks', type: 'checkbox', label: 'Tạo bookmark theo tên từng file (bookmark gốc của mỗi file được giữ lại bên trong)', def: true }],
+    run: async ctx => {
+      if (ctx.files.length < 2) throw new Error('Cần ít nhất 2 file');
+      const files = [];
+      for (const f of ctx.files) { let outline = []; try { outline = await PS.readOutline(f.bytes, ctx.pw); } catch (e) { /* không đọc được bookmark: bỏ qua */ } files.push({ name: f.name, bytes: f.bytes, pw: ctx.pw, outline }); }
+      ctx.add('gop.pdf', await PS.mergePdfs(files, { bookmarks: ctx.o.bookmarks }), 'application/pdf');
+    } },
+  { g: 'Cắt ghép', id: 'split', title: 'Tách PDF', desc: 'Tách theo khoảng trang, mỗi N trang, từng trang, hoặc theo heading (tự nhận diện). Bookmark của file gốc được chuyển sang các file con.', accept: '.pdf', multi: true, pw: true,
+    opts: [{ id: 'mode', type: 'select', label: 'Cách tách', options: [['ranges', 'Theo khoảng trang'], ['every', 'Mỗi N trang một file'], ['each', 'Mỗi trang một file'], ['headings', 'Theo heading']] },
+      { id: 'ranges', type: 'text', label: 'Khoảng trang (vd 1-3,5,7-)', def: '1-3', w: '200px', when: o => o.mode === 'ranges' },
+      { id: 'n', type: 'number', label: 'Số trang mỗi file', def: 10, min: 1, w: '90px', when: o => o.mode === 'every' },
+      { id: 'lvl', type: 'number', label: 'Tách tại heading cấp', def: 1, min: 1, max: 6, w: '80px', when: o => o.mode === 'headings' }],
+    run: async ctx => ctx.each(async (f, report) => {
+      const o = ctx.o; let heads;
+      if (o.mode === 'headings') { const { lines } = await PS.extractLines(f.bytes, { password: ctx.pw, onProgress: (p, n) => report(p / n) }); heads = PS.detectHeadings(lines, 6).headings; }
+      const val = o.mode === 'ranges' ? o.ranges : o.mode === 'every' ? o.n : o.mode === 'headings' ? o.lvl : '';
+      let outline = []; try { outline = await PS.readOutline(f.bytes, ctx.pw); } catch (e) { /* */ }
+      for (const r of await PS.splitPdf(f.bytes, PS.stem(f.name), o.mode, val, { pw: ctx.pw, headings: heads, outline })) ctx.add(r.name, r.bytes, r.mime);
+    }) },
+  { g: 'Cắt ghép', id: 'organize', title: 'Sắp xếp / xoay / xóa trang', desc: 'Xem thumbnail, xoay, xóa, đổi thứ tự hoặc chọn riêng các trang cần xuất.', accept: '.pdf', multi: false, pw: true, custom: 'organize', opts: [] },
+  { g: 'Cắt ghép', id: 'crop', title: 'Cắt lề / chia đôi trang', desc: 'Cắt bớt lề các trang, hoặc chia mỗi trang thành 2 (trái/phải hay trên/dưới — dùng cho sách scan 2 trang/tờ).', accept: '.pdf', multi: true, pw: true,
+    opts: [{ id: 'mode', type: 'select', label: 'Kiểu cắt', options: [['margins', 'Cắt lề'], ['halfLR', 'Chia đôi trái | phải'], ['halfTB', 'Chia đôi trên / dưới']] },
+      { id: 'top', type: 'number', label: 'Lề trên (mm)', def: 10, min: 0, w: '80px', when: o => o.mode === 'margins' }, { id: 'bottom', type: 'number', label: 'Lề dưới (mm)', def: 10, min: 0, w: '80px', when: o => o.mode === 'margins' },
+      { id: 'left', type: 'number', label: 'Lề trái (mm)', def: 10, min: 0, w: '80px', when: o => o.mode === 'margins' }, { id: 'right', type: 'number', label: 'Lề phải (mm)', def: 10, min: 0, w: '80px', when: o => o.mode === 'margins' },
+      { id: 'pages', type: 'text', label: 'Áp dụng cho trang (trống = tất cả)', ph: '1-3,5', w: '170px' }],
+    run: async ctx => ctx.each(async f => { const mm = 72 / 25.4, o = ctx.o; ctx.add(PS.stem(f.name) + '_cat.pdf', await PS.cropPdf(f.bytes, { mode: o.mode, top: (o.top || 0) * mm, bottom: (o.bottom || 0) * mm, left: (o.left || 0) * mm, right: (o.right || 0) * mm, pages: o.pages, pw: ctx.pw }), 'application/pdf'); }) },
+
+  { g: 'Bảo mật', id: 'unlock', title: 'Mở khóa PDF', desc: 'Gỡ mật khẩu và các hạn chế (in, sao chép, chỉnh sửa) bằng qpdf chạy trong trình duyệt. Chỉ dùng cho file của bạn hoặc file bạn được phép xử lý.', accept: '.pdf', multi: true,
+    opts: [{ id: 'pw', type: 'password', label: 'Mật khẩu (để trống nếu PDF chỉ bị hạn chế in/sao chép)', w: '260px' }, { id: 'fallback', type: 'checkbox', label: 'Nếu qpdf lỗi: chuyển các trang thành ảnh (mất chữ chọn được)', def: false }],
+    run: async ctx => ctx.each(async (f, report) => {
+      let out, note = '';
+      try { out = await PS.qpdfDecrypt(f.bytes, ctx.o.pw); }
+      catch (e) { if (!ctx.o.fallback) throw e; note = 'qpdf lỗi → đã chuyển thành ảnh'; out = await PS.rasterizeToPdf(f.bytes, { pw: ctx.o.pw, dpi: 150, onProgress: (p, n) => report(p / n) }); }
+      ctx.add(PS.stem(f.name) + '_mokhoa.pdf', out, 'application/pdf', note);
+    }) },
+  { g: 'Bảo mật', id: 'protect', title: 'Đặt mật khẩu / giới hạn quyền', desc: 'Mã hóa AES-256. Mật khẩu mở file là tùy chọn; mật khẩu chủ dùng để gỡ giới hạn (bỏ trống sẽ tự tạo và hiển thị).', accept: '.pdf', multi: true, pw: true,
+    opts: [{ id: 'user', type: 'password', label: 'Mật khẩu mở file (trống = ai cũng mở được)', w: '240px' }, { id: 'owner', type: 'password', label: 'Mật khẩu chủ (quyền chỉnh sửa)', w: '240px' },
+      { id: 'print', type: 'select', label: 'Cho phép in', options: [['full', 'In đầy đủ'], ['low', 'In chất lượng thấp'], ['none', 'Không cho in']] },
+      { id: 'modify', type: 'select', label: 'Cho phép chỉnh sửa', options: [['all', 'Tất cả'], ['annotate', 'Chỉ ghi chú'], ['form', 'Chỉ điền form'], ['assembly', 'Chỉ sắp xếp trang'], ['none', 'Không']] },
+      { id: 'extract', type: 'checkbox', label: 'Cho phép sao chép nội dung', def: true }, { id: 'annotate', type: 'checkbox', label: 'Cho phép thêm chú thích', def: true }],
+    run: async ctx => ctx.each(async f => { const r = await PS.qpdfEncrypt(f.bytes, Object.assign({}, ctx.o, { annotate: ctx.o.annotate })); ctx.add(PS.stem(f.name) + '_baomat.pdf', r.bytes, 'application/pdf', !ctx.o.owner ? 'Mật khẩu chủ tự tạo: ' + r.owner : ''); }) },
+
+  { g: 'Watermark', id: 'wmadd', title: 'Đóng watermark', desc: 'Chèn chữ hoặc ảnh vào các trang (1 vị trí giữa trang hoặc lát khắp trang). Watermark được gắn nhãn chuẩn để xóa lại dễ dàng.', accept: '.pdf', multi: true, pw: true,
+    opts: [{ id: 'type', type: 'select', label: 'Loại', options: [['text', 'Chữ'], ['image', 'Ảnh']] },
+      { id: 'text', type: 'text', label: 'Nội dung chữ', def: 'BẢN NHÁP', w: '240px', when: o => o.type === 'text' },
+      { id: 'size', type: 'number', label: 'Cỡ chữ', def: 60, min: 8, w: '80px', when: o => o.type === 'text' }, { id: 'color', type: 'color', label: 'Màu', def: '#888888', when: o => o.type === 'text' }, { id: 'bold', type: 'checkbox', label: 'In đậm', def: true, when: o => o.type === 'text' },
+      { id: 'image', type: 'file', label: 'Ảnh (PNG/JPG)', accept: '.png,.jpg,.jpeg', when: o => o.type === 'image' }, { id: 'scale', type: 'number', label: 'Chiều rộng ảnh (% trang)', def: 50, min: 5, max: 100, w: '90px', when: o => o.type === 'image' },
+      { id: 'opacity', type: 'number', label: 'Độ đậm (%)', def: 30, min: 2, max: 100, w: '80px' }, { id: 'rotate', type: 'number', label: 'Góc xoay (độ)', def: 45, min: -180, max: 180, w: '80px' },
+      { id: 'mode', type: 'select', label: 'Bố cục', options: [['center', 'Một dấu giữa trang'], ['tile', 'Lát khắp trang']] },
+      { id: 'gapX', type: 'number', label: 'Khoảng cách ngang', def: 60, w: '80px', when: o => o.mode === 'tile' }, { id: 'gapY', type: 'number', label: 'Khoảng cách dọc', def: 80, w: '80px', when: o => o.mode === 'tile' },
+      { id: 'pages', type: 'text', label: 'Trang (trống = tất cả)', ph: '1-3,5', w: '150px' }],
+    run: async ctx => ctx.each(async f => { const r = await PS.addWatermark(f.bytes, Object.assign({}, ctx.o, { pw: ctx.pw })); ctx.add(PS.stem(f.name) + '_wm.pdf', r.bytes, 'application/pdf', r.warn); }) },
+  { g: 'Watermark', id: 'wmremove', title: 'Xóa watermark', desc: 'Xóa watermark gắn nhãn chuẩn (kể cả do công cụ này đóng), lớp “Watermark”, chú thích Watermark, chữ theo nội dung, hoặc ảnh/đối tượng lặp ở mọi trang. Không thể xóa watermark đã “nướng” vào ảnh trang (PDF scan).', accept: '.pdf', multi: true, pw: true, custom: 'wmremove',
+    opts: [{ id: 'marked', type: 'checkbox', label: 'Xóa watermark gắn nhãn chuẩn / lớp Watermark', def: true }, { id: 'annots', type: 'checkbox', label: 'Xóa chú thích loại Watermark', def: true },
+      { id: 'text', type: 'text', label: 'Xóa chữ watermark có nội dung (không bắt buộc)', ph: 'vd: CONFIDENTIAL', w: '260px' },
+      { id: 'auto', type: 'checkbox', label: 'Tự xóa ảnh/đối tượng lặp ở ≥50% số trang (có thể xóa nhầm logo)', def: false },
+      { id: 'pages', type: 'text', label: 'Trang (trống = tất cả)', ph: '1-3,5', w: '150px' }] },
+
+  { g: 'Bookmark & Mục lục', id: 'bookmarks', title: 'Bookmark (heading) PDF', desc: 'Xem, thêm, sửa, xóa bookmark — tức là danh sách heading hiển thị dạng cây ở khung bên trái của trình xem PDF. Đọc bookmark có sẵn, tự nhận diện từ nội dung, hoặc dán mục lục dạng văn bản; có xem trước trang để chọn đúng số trang.', accept: '.pdf', multi: false, pw: true, custom: 'bookmarks', opts: [] },
+  { g: 'Bookmark & Mục lục', id: 'headings', title: 'Heading → Mục lục / Word', desc: 'Nhận diện heading, chỉnh lại danh sách, rồi ghi bookmark + chèn trang mục lục vào PDF, xuất Word, hoặc tách theo heading.', accept: '.pdf', multi: false, pw: true, custom: 'headings', opts: [] },
+  { g: 'Bookmark & Mục lục', id: 'template', title: 'Mẫu Word heading đa cấp', desc: 'Tạo file .docx trắng (A4, lề NĐ 30) có sẵn Heading 1–n gắn danh sách đa cấp tự đánh số.', noFiles: true,
+    opts: [{ id: 'scheme', type: 'select', label: 'Kiểu đánh số', options: Object.entries(PS.WORD_SCHEMES).map(([k, v]) => [k, v.label]) }, { id: 'levels', type: 'number', label: 'Số cấp', def: 4, min: 1, max: 6, w: '70px' }, { id: 'font', type: 'text', label: 'Font', def: 'Times New Roman', w: '170px' }, { id: 'size', type: 'number', label: 'Cỡ chữ', def: 13, min: 9, max: 16, step: 0.5, w: '70px' }],
+    run: async ctx => ctx.add('mau_heading_' + ctx.o.scheme + '.docx', await PS.buildTemplate(ctx.o), WORD_MIME) },
+
+  { g: 'Khác', id: 'pagenum', title: 'Đánh số trang', desc: 'Thêm số trang vào PDF.', accept: '.pdf', multi: true, pw: true,
+    opts: [{ id: 'format', type: 'text', label: 'Định dạng ({n} = số trang, {N} = tổng)', def: 'Trang {n}/{N}', w: '220px' }, { id: 'pos', type: 'select', label: 'Vị trí', options: [['bc', 'Dưới giữa'], ['br', 'Dưới phải'], ['bl', 'Dưới trái'], ['tc', 'Trên giữa'], ['tr', 'Trên phải'], ['tl', 'Trên trái']] },
+      { id: 'start', type: 'number', label: 'Bắt đầu từ số', def: 1, w: '80px' }, { id: 'size', type: 'number', label: 'Cỡ chữ', def: 11, w: '70px' }, { id: 'skipFirst', type: 'checkbox', label: 'Bỏ qua trang đầu', def: false }, { id: 'pages', type: 'text', label: 'Trang (trống = tất cả)', w: '150px' }],
+    run: async ctx => ctx.each(async f => { const r = await PS.addPageNumbers(f.bytes, Object.assign({}, ctx.o, { pw: ctx.pw })); ctx.add(PS.stem(f.name) + '_sotrang.pdf', r.bytes, 'application/pdf', r.warn); }) },
+  { g: 'Khác', id: 'meta', title: 'Thông tin tài liệu', desc: 'Xem và sửa Title/Author/Subject/Keywords.', accept: '.pdf', multi: false, pw: true,
+    opts: ['title', 'author', 'subject', 'keywords', 'creator', 'producer'].map(k => ({ id: k, type: 'text', label: k[0].toUpperCase() + k.slice(1), w: '320px' })),
+    onFiles: async (list, ctx) => { if (!list.length || !ctx) return; try { const m = await PS.getMeta(list[0].bytes, ctx.pwVal()); for (const k in m) ctx.form.set(k, m[k]); } catch (e) { status(e.message); } },
+    run: async ctx => ctx.add(PS.stem(ctx.files[0].name) + '_tt.pdf', await PS.setMeta(ctx.files[0].bytes, ctx.o, ctx.pw), 'application/pdf') },
+];
+
+/* ---------- dựng bảng điều khiển ---------- */
+let current = null;
+function openTool(id) {
+  const tool = TOOLS.find(t => t.id === id); current = tool; location.hash = id;
+  document.querySelectorAll('#nav button').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+  const p = $('panel'); p.innerHTML = ''; R.items = []; R.errors = []; R.notes = []; renderResults(); status('');
+  p.append(h('h2', {}, tool.title), h('p', { class: 'hint' }, tool.desc));
+  const ctx = { files: [], tool };
+  let picker = null; const optBox = h('div', { class: 'opts' }); let pwBox = null, pwEl = null;
+  if (!tool.noFiles) { const fb = h('div', { class: 'files' }); picker = filePicker(Object.assign({}, tool, { onFiles: l => tool.onFiles && tool.onFiles(l, ctx) }), fb); p.append(fb); ctx.files = picker.list; }
+  if (tool.pw) { pwEl = h('input', { type: 'password', style: 'width:230px' }); pwBox = h('label', {}, h('span', {}, 'Mật khẩu mở file (chỉ cần nếu PDF có mật khẩu)'), pwEl); optBox.append(pwBox); }
+  const form = buildOpts(optBox, tool.opts); p.append(optBox);
+  ctx.form = form; ctx.pwVal = () => (pwEl ? pwEl.value : '');
+  const extra = h('div', { class: 'extra' }), bar = h('div', { class: 'actions' }); p.append(extra, bar);
+  ctx.extra = extra;
+  const mkRunCtx = () => {
+    const rc = { files: picker ? picker.list : [], o: form.values(), pw: ctx.pwVal(), extra };
+    rc.add = (name, bytes, mime, note) => R.items.push({ name, bytes: bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes), mime, note });
+    rc.note = t => R.notes.push(t);
+    rc.each = async fn => {
+      if (!rc.files.length) throw new Error('Chưa chọn file');
+      for (let i = 0; i < rc.files.length; i++) {
+        const f = rc.files[i], base = i / rc.files.length;
+        status(`(${i + 1}/${rc.files.length}) ${f.name}`, base);
+        try { await fn(f, frac => status(`(${i + 1}/${rc.files.length}) ${f.name}`, base + frac / rc.files.length)); }
+        catch (e) { R.errors.push(`${f.name}: ${e.message || e}`); }
+      }
+    };
+    return rc;
+  };
+  const run = async fn => {
+    R.items = []; R.errors = []; R.notes = []; renderResults(); bar.querySelectorAll('button').forEach(b => (b.disabled = true));
+    try { status('Đang xử lý…', 0); await PS.libsReady; await fn(mkRunCtx()); status(R.errors.length && !R.items.length ? 'Có lỗi.' : (R.items.length || R.notes.length ? 'Xong.' : ''), null); }
+    catch (e) { R.errors.push(e.message || String(e)); status('Có lỗi.', null); console.error(e); }
+    bar.querySelectorAll('button').forEach(b => (b.disabled = false)); renderResults();
+  };
+  ctx.run = run; ctx.mkRunCtx = mkRunCtx; ctx.bar = bar; ctx.R = R;
+  if (tool.custom && CUSTOM[tool.custom]) CUSTOM[tool.custom](tool, ctx, h, form);
+  else { bar.append(h('button', { class: 'act', onclick: () => run(tool.run) }, 'Thực hiện')); }
+}
+const CUSTOM = {};
+PS.UI = { h, $, TOOLS, CUSTOM, status, renderResults, saveAs, fmtSize, readBytes, R, WORD_MIME, buildOpts };
+
+/* ---------- khởi động ---------- */
+PS.startUI = function () {
+  const nav = $('nav'); let g = null;
+  TOOLS.forEach(t => { if (t.g !== g) { g = t.g; nav.append(h('div', { class: 'grp' }, g)); } nav.append(h('button', { 'data-id': t.id, onclick: () => openTool(t.id) }, t.title)); });
+  const fontIn = $('fontfile'); if (fontIn) fontIn.onchange = async () => { const f = fontIn.files[0]; if (f) { PS.userFonts.regular = await readBytes(f); $('fontinfo').textContent = 'Đã dùng font: ' + f.name; } };
+  const fontB = $('fontbold'); if (fontB) fontB.onchange = async () => { const f = fontB.files[0]; if (f) PS.userFonts.bold = await readBytes(f); };
+  openTool((location.hash || '').slice(1) && TOOLS.some(t => t.id === location.hash.slice(1)) ? location.hash.slice(1) : 'pdf2docx');
+};
+})();
+
+/* ===== 05-custom: các công cụ có giao diện riêng ===== */
+(function () {
+const PS = window.PS, { h, CUSTOM, status, WORD_MIME, buildOpts, R, TOOLS } = PS.UI;
+const WORD_OPTS = TOOLS.find(t => t.id === 'pdf2docx').opts;
+
+/* ---------- Bookmark (heading) PDF: xem / sửa / thêm / xóa ---------- */
+CUSTOM.bookmarks = (tool, ctx) => {
+  let rows = [], pdf = null, nPages = 0;
+  const clampPg = p => Math.max(1, Math.min(nPages || 1e9, Math.round(+p) || 1));
+  const preview = h('div', { class: 'prev' }, h('div', { class: 'hint' }, 'Bấm 👁 ở một dòng để xem trước trang đó.'));
+  const tableBox = h('div', { class: 'bmtable' }), wrap = h('div', { class: 'bmwrap' }, tableBox, preview);
+  const show = async n => {
+    if (!pdf) return; n = clampPg(n);
+    try { const cv = await PS.renderPage(pdf, n, 0.55); preview.replaceChildren(h('div', { class: 'hint' }, `Trang ${n}/${nPages}`), cv); } catch (e) { /* */ }
+  };
+  const paint = () => {
+    const tb = h('tbody');
+    rows.forEach((r, k) => {
+      const lv = h('select', { onchange: () => { r.level = +lv.value; paint(); } }, [1, 2, 3, 4, 5, 6].map(l => h('option', { value: l }, 'Cấp ' + l))); lv.value = r.level;
+      const ti = h('input', { type: 'text', style: `margin-left:${(r.level - 1) * 14}px;width:calc(100% - ${(r.level - 1) * 14}px)`, oninput: () => (r.title = ti.value) }); ti.value = r.title;
+      const pg = h('input', { type: 'number', min: 1, max: nPages || null, style: 'width:72px', oninput: () => (r.page = +pg.value || 1), onchange: () => show(r.page) }); pg.value = r.page;
+      const mv = d => () => { const j = k + d; if (j >= 0 && j < rows.length) { [rows[k], rows[j]] = [rows[j], rows[k]]; paint(); } };
+      tb.append(h('tr', {},
+        h('td', { style: 'white-space:nowrap' }, h('button', { class: 'ico', title: 'Giảm cấp (đẩy ra ngoài)', onclick: () => { if (r.level > 1) { r.level--; paint(); } } }, '◀'), lv, h('button', { class: 'ico', title: 'Tăng cấp (thụt vào)', onclick: () => { if (r.level < 6) { r.level++; paint(); } } }, '▶')),
+        h('td', {}, ti), h('td', {}, pg),
+        h('td', { style: 'white-space:nowrap' }, h('button', { class: 'ico', title: 'Xem trang', onclick: () => show(r.page) }, '👁'), h('button', { class: 'ico', title: 'Lên', onclick: mv(-1) }, '↑'), h('button', { class: 'ico', title: 'Xuống', onclick: mv(1) }, '↓'),
+          h('button', { class: 'ico', title: 'Chèn dòng bên dưới', onclick: () => { rows.splice(k + 1, 0, { level: r.level, title: 'Bookmark mới', page: r.page }); paint(); } }, '＋'), h('button', { class: 'ico', title: 'Xóa dòng', onclick: () => { rows.splice(k, 1); paint(); } }, '✕'))));
+    });
+    tableBox.replaceChildren(rows.length ? h('div', { class: 'box' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', {}, 'Cấp'), h('th', {}, 'Tiêu đề bookmark'), h('th', {}, 'Trang'), h('th', {}, ''))), tb)) : h('p', { class: 'hint' }, 'Bảng đang trống. Dùng các nút phía trên để đọc bookmark, nhận diện heading, nhập từ văn bản hoặc thêm dòng.'),
+      h('p', { class: 'hint' }, `${rows.length} bookmark`));
+  };
+  /* nhập từ văn bản */
+  const ta = h('textarea', { rows: 7, style: 'width:100%', placeholder: 'Mỗi dòng một bookmark, số trang ở cuối dòng. Cấp lấy theo thụt lề hoặc theo số thứ tự.\nVí dụ:\nCHƯƠNG I. QUY ĐỊNH CHUNG ........ 3\nĐiều 1. Phạm vi điều chỉnh ........ 3\nĐiều 2. Đối tượng áp dụng ........ 4\nCHƯƠNG II. TỔ CHỨC THỰC HIỆN ........ 6' });
+  const off = h('input', { type: 'number', value: 0, style: 'width:80px' }), append = h('input', { type: 'checkbox' });
+  const imp = h('details', { class: 'imp' }, h('summary', {}, 'Nhập từ văn bản (dán mục lục có sẵn)'), ta,
+    h('div', { class: 'bmtools' }, h('label', { class: 'chk' }, 'Lệch số trang (số in trong sách → trang PDF):', off), h('label', { class: 'chk' }, append, 'Nối vào cuối bảng'),
+      h('button', { class: 'sec', onclick: () => { try { const nr = PS.parseOutlineText(ta.value, { offset: +off.value || 0 }).map(r => ({ level: r.level, title: r.title, page: clampPg(r.page) })); rows = append.checked ? rows.concat(nr) : nr; paint(); status(`Đã nạp ${nr.length} dòng vào bảng — kiểm tra rồi bấm "Ghi bookmark vào PDF".`); } catch (e) { status(e.message); } } }, 'Nạp vào bảng')));
+  /* thanh công cụ bảng */
+  const shift = h('input', { type: 'number', value: 1, style: 'width:70px' });
+  const tools = h('div', { class: 'bmtools' },
+    h('button', { class: 'sec', onclick: () => { const l = rows[rows.length - 1]; rows.push({ level: l ? l.level : 1, title: 'Bookmark mới', page: l ? l.page : 1 }); paint(); } }, '＋ Thêm dòng'),
+    h('span', {}, 'Dịch tất cả số trang:'), shift, h('button', { class: 'sec', onclick: () => { const d = +shift.value || 0; rows.forEach(r => (r.page = clampPg(r.page + d))); paint(); } }, 'Áp dụng'),
+    h('button', { class: 'sec', onclick: () => { rows.forEach(r => (r.level = Math.min(6, r.level + 1))); paint(); } }, 'Cấp +1 tất cả'),
+    h('button', { class: 'sec', onclick: () => { rows.forEach(r => (r.level = Math.max(1, r.level - 1))); paint(); } }, 'Cấp −1 tất cả'),
+    h('button', { class: 'sec', onclick: () => { rows = []; paint(); } }, 'Xóa hết dòng'));
+  ctx.extra.append(imp, tools, wrap); paint();
+  tool.onFiles = async list => {
+    rows = []; pdf = null; nPages = 0; paint(); preview.replaceChildren(h('div', { class: 'hint' }, 'Bấm 👁 ở một dòng để xem trước trang đó.'));
+    if (!list.length) return;
+    try { pdf = await PS.openPdfjs(list[0].bytes, ctx.pwVal()); nPages = pdf.numPages; status(`${nPages} trang. Bấm "Đọc bookmark hiện có" hoặc nhập danh sách.`); show(1); } catch (e) { status(e.message); }
+  };
+  const entries = () => {
+    const e = rows.filter(r => r.title.trim()).map(r => ({ level: +r.level, title: r.title.trim(), page: Math.round(+r.page) }));
+    if (!e.length) throw new Error('Bảng chưa có bookmark nào'); return e;
+  };
+  ctx.bar.append(
+    h('button', { class: 'sec', onclick: () => ctx.run(async rc => {
+      const f = rc.files[0]; if (!f) throw new Error('Chưa chọn file PDF');
+      const e = await PS.readOutline(f.bytes, rc.pw); if (!e.length) { rc.note('PDF này chưa có bookmark. Hãy nhận diện từ nội dung, nhập từ văn bản hoặc thêm dòng thủ công.'); return; }
+      rows = e.map(x => ({ level: Math.min(6, x.level), title: x.title, page: x.page })); paint(); rc.note(`Đã đọc ${rows.length} bookmark hiện có. Sửa trong bảng rồi bấm "Ghi bookmark vào PDF".`);
+    }) }, 'Đọc bookmark hiện có'),
+    h('button', { class: 'sec', onclick: () => ctx.run(async rc => {
+      const f = rc.files[0]; if (!f) throw new Error('Chưa chọn file PDF');
+      const { lines } = await PS.extractLines(f.bytes, { password: rc.pw, onProgress: (p, n) => status(`Đang đọc trang ${p}/${n}`, p / n) });
+      if (!lines.length) throw new Error('PDF không có lớp chữ (bản scan?) — cần OCR trước.');
+      const hs = PS.detectHeadings(lines, 6).headings.filter(x => x.level >= 1); if (!hs.length) throw new Error('Không nhận diện được heading nào.');
+      rows = hs.map(x => ({ level: x.level, title: x.title, page: x.page })); paint(); rc.note(`Nhận diện ${rows.length} heading. Kiểm tra và sửa trong bảng rồi ghi vào PDF.`);
+    }) }, 'Tự nhận diện từ nội dung'),
+    h('button', { class: 'act', onclick: () => ctx.run(async rc => { const f = rc.files[0]; if (!f) throw new Error('Chưa chọn file PDF'); rc.add(PS.stem(f.name) + '_bookmark.pdf', await PS.applyOutline(f.bytes, entries(), rc.pw), 'application/pdf', 'Đã thay toàn bộ bookmark cũ bằng bảng hiện tại'); }) }, 'Ghi bookmark vào PDF'),
+    h('button', { class: 'sec', onclick: () => ctx.run(async rc => { const f = rc.files[0]; if (!f) throw new Error('Chưa chọn file PDF'); rc.add(PS.stem(f.name) + '_khong_bookmark.pdf', await PS.removeOutline(f.bytes, rc.pw), 'application/pdf'); }) }, 'Xóa toàn bộ bookmark'),
+    h('button', { class: 'sec', onclick: () => { try { const e = entries(); PS.UI.saveAs(new TextEncoder().encode(PS.outlineToText(e)), 'bookmark.txt', 'text/plain;charset=utf-8'); } catch (er) { status(er.message); } } }, 'Tải danh sách (.txt)'));
+};
+
+/* ---------- Heading → mục lục / Word ---------- */
+CUSTOM.headings = (tool, ctx) => {
+  const extra = ctx.extra, src = buildOpts(extra, [
+    { id: 'source', type: 'select', label: 'Nguồn heading', options: [['auto', 'Tự động (ưu tiên bookmark có sẵn)'], ['detect', 'Nhận diện từ nội dung'], ['bookmarks', 'Chỉ lấy bookmark có sẵn']] },
+    { id: 'maxl', type: 'number', label: 'Số cấp tối đa', def: 4, min: 1, max: 6, w: '80px' }]);
+  const tableBox = h('div'), actBox = h('div', { class: 'after' }); extra.append(tableBox, actBox);
+  let HEADS = [];
+  const chosen = () => HEADS.filter(x => x.keep !== false && x.title.trim()).map(x => ({ level: +x.level, title: x.title.trim(), orig: x.orig, page: x.page }));
+  const render = () => {
+    const tb = h('tbody');
+    HEADS.forEach(x => {
+      const ck = h('input', { type: 'checkbox', onchange: () => (x.keep = ck.checked) }); ck.checked = x.keep !== false;
+      const sel = h('select', { onchange: () => (x.level = +sel.value) }, [0, 1, 2, 3, 4, 5, 6].map(l => h('option', { value: l }, l === 0 ? 'Tiêu đề' : 'Cấp ' + l))); sel.value = x.level;
+      const ti = h('input', { type: 'text', oninput: () => (x.title = ti.value) }); ti.value = x.title;
+      tb.append(h('tr', {}, h('td', {}, ck), h('td', {}, sel), h('td', {}, ti), h('td', {}, String(x.page))));
+    });
+    tableBox.innerHTML = '';
+    tableBox.append(h('div', { class: 'box' }, h('table', {}, h('thead', {}, h('tr', {}, h('th', {}, 'Giữ'), h('th', {}, 'Cấp'), h('th', {}, 'Tiêu đề'), h('th', {}, 'Trang'))), tb)));
+  };
+  const detect = () => ctx.run(async rc => {
+    const f = rc.files[0]; if (!f) throw new Error('Chưa chọn file PDF');
+    const o = src.values(); let heads = [], used = 'nội dung';
+    if (o.source !== 'detect') { heads = await PS.readOutline(f.bytes, rc.pw); used = 'bookmark có sẵn'; }
+    if (!heads.length && o.source !== 'bookmarks') {
+      const { lines, pages } = await PS.extractLines(f.bytes, { password: rc.pw, onProgress: (p, n) => status(`Đang đọc trang ${p}/${n}`, p / n) });
+      if (!lines.length) throw new Error('PDF không có lớp chữ (bản scan?) — cần OCR trước.');
+      heads = PS.detectHeadings(lines, o.maxl).headings; used = 'nhận diện từ nội dung'; rc.pagesTotal = pages;
+    }
+    if (!heads.length) throw new Error('Không nhận diện được heading nào. Thử đổi nguồn hoặc kiểm tra PDF có phải bản scan không.');
+    HEADS = heads.map(x => Object.assign({}, x, { keep: true })); render(); buildActions();
+    rc.note(`${HEADS.length} dòng — nguồn: ${used}. Sửa cấp/tiêu đề hoặc bỏ tick dòng sai rồi chọn thao tác bên dưới.`);
+  });
+  ctx.bar.append(h('button', { class: 'act', onclick: detect }, 'Nhận diện heading'));
+  let built = false;
+  const buildActions = () => {
+    if (built) return; built = true;
+    const a = h('div', { class: 'opts' });
+    const pf = buildOpts(a, [{ id: 'bookmarks', type: 'checkbox', label: 'Ghi bookmark (ghi đè bookmark cũ)', def: true }, { id: 'toc', type: 'checkbox', label: 'Chèn trang mục lục', def: true },
+      { id: 'title', type: 'text', label: 'Tiêu đề mục lục', def: 'MỤC LỤC', w: '150px' }, { id: 'insertAt', type: 'number', label: 'Chèn tại trang (0 = đầu)', def: 0, min: 0, w: '90px' }, { id: 'tocLevels', type: 'number', label: 'Mục lục tới cấp', def: 3, min: 1, max: 6, w: '70px' }]);
+    const b1 = h('button', { class: 'act', onclick: () => ctx.run(async rc => {
+      const f = rc.files[0], o = pf.values(), doc = await PS.loadPdf(f.bytes, rc.pw);
+      if (!o.bookmarks && !o.toc) throw new Error('Chọn ít nhất một: bookmark hoặc trang mục lục');
+      const r = await PS.applyTocBookmarks(doc, chosen().filter(x => x.level >= 1), o);
+      rc.add(PS.stem(f.name) + '_muc_luc.pdf', await PS.save(doc), 'application/pdf', r.warn || ''); }) }, 'Tạo PDF');
+    const w = h('div', { class: 'opts' }), wf = buildOpts(w, WORD_OPTS);
+    const b2 = h('button', { class: 'act', onclick: () => ctx.run(async rc => {
+      const f = rc.files[0], o = wf.values();
+      const { lines } = await PS.extractLines(f.bytes, { password: rc.pw, onProgress: (p, n) => status(`Đang đọc trang ${p}/${n}`, p / n) });
+      let { segs } = PS.detectHeadings(lines, o.levels);
+      if (PS.applyOverrides(segs, chosen()) === 0) { segs = PS.detectHeadings(lines, o.levels).segs; rc.note('Danh sách heading đã sửa không khớp nội dung (nguồn bookmark?) — đã dùng kết quả tự nhận diện.'); }
+      rc.add(PS.stem(f.name) + '.docx', await PS.buildDocx(segs, o), WORD_MIME); }) }, 'Xuất Word');
+    const s = h('div', { class: 'opts' }), sf = buildOpts(s, [{ id: 'lvl', type: 'number', label: 'Tách tại heading cấp', def: 1, min: 1, max: 6, w: '80px' }]);
+    const b3 = h('button', { class: 'sec', onclick: () => ctx.run(async rc => { const f = rc.files[0]; for (const r of await PS.splitPdf(f.bytes, PS.stem(f.name), 'headings', sf.values().lvl, { pw: rc.pw, headings: chosen() })) rc.add(r.name, r.bytes, r.mime); }) }, 'Tách PDF theo heading');
+    actBox.append(h('h3', {}, 'Ghi vào PDF'), a, b1, h('h3', {}, 'Xuất Word'), w, b2, h('h3', {}, 'Tách theo heading'), s, b3);
+  };
+};
+
+/* ---------- Sắp xếp / xoay / xóa trang ---------- */
+CUSTOM.organize = (tool, ctx) => {
+  let pages = [], token = 0;
+  const grid = h('div', { class: 'thumbs' }); ctx.extra.append(grid);
+  const paint = () => {
+    grid.innerHTML = '';
+    pages.forEach((p, k) => {
+      const card = h('div', { class: 'thumb' + (p.del ? ' del' : '') });
+      p.canvas.style.transform = `rotate(${p.rot}deg)`; const box = h('div', { class: 'tbox' }, p.canvas);
+      const sel = h('input', { type: 'checkbox', onchange: () => (p.sel = sel.checked) }); sel.checked = !!p.sel;
+      card.append(box, h('div', { class: 'tlabel' }, h('label', { class: 'chk' }, sel, 'Trang ' + (p.i + 1))),
+        h('div', { class: 'tbtn' },
+          h('button', { class: 'ico', title: 'Xoay trái', onclick: () => { p.rot = (p.rot + 270) % 360; paint(); } }, '↺'), h('button', { class: 'ico', title: 'Xoay phải', onclick: () => { p.rot = (p.rot + 90) % 360; paint(); } }, '↻'),
+          h('button', { class: 'ico', title: 'Lên trước', onclick: () => { if (k) { [pages[k - 1], pages[k]] = [pages[k], pages[k - 1]]; paint(); } } }, '◀'), h('button', { class: 'ico', title: 'Ra sau', onclick: () => { if (k < pages.length - 1) { [pages[k + 1], pages[k]] = [pages[k], pages[k + 1]]; paint(); } } }, '▶'),
+          h('button', { class: 'ico', title: p.del ? 'Khôi phục' : 'Xóa', onclick: () => { p.del = !p.del; paint(); } }, p.del ? '↩' : '✕')));
+      grid.append(card);
+    });
+  };
+  tool.onFiles = async list => {
+    const my = ++token; pages = []; grid.innerHTML = ''; if (!list.length) return;
+    try {
+      const pdf = await PS.openPdfjs(list[0].bytes, ctx.pwVal());
+      for (let n = 1; n <= pdf.numPages; n++) {
+        if (my !== token) return; status(`Đang tạo thumbnail ${n}/${pdf.numPages}`, n / pdf.numPages);
+        const cv = await PS.renderPage(pdf, n, 0.28); pages.push({ i: n - 1, rot: 0, del: false, sel: false, canvas: cv });
+        if (n % 4 === 0 || n === pdf.numPages) paint();
+      }
+      status('');
+    } catch (e) { status(e.message); }
+  };
+  const go = onlySel => ctx.run(async rc => {
+    const f = rc.files[0]; if (!f) throw new Error('Chưa chọn file');
+    const plan = pages.filter(p => !p.del && (!onlySel || p.sel)).map(p => ({ i: p.i, rot: p.rot }));
+    if (!plan.length) throw new Error(onlySel ? 'Chưa chọn trang nào' : 'Không còn trang nào');
+    let outline = []; try { outline = await PS.readOutline(f.bytes, rc.pw); } catch (e) { /* */ }
+    rc.add(PS.stem(f.name) + (onlySel ? '_trich.pdf' : '_sapxep.pdf'), await PS.organizePdf(f.bytes, plan, rc.pw, outline), 'application/pdf');
+  });
+  ctx.bar.append(h('button', { class: 'act', onclick: () => go(false) }, 'Xuất PDF (thứ tự hiện tại)'), h('button', { class: 'sec', onclick: () => go(true) }, 'Chỉ xuất trang đã chọn'),
+    h('button', { class: 'sec', onclick: () => { pages.forEach(p => (p.sel = true)); paint(); } }, 'Chọn tất cả'), h('button', { class: 'sec', onclick: () => { pages.forEach(p => (p.sel = false)); paint(); } }, 'Bỏ chọn'));
+};
+
+/* ---------- Xóa watermark ---------- */
+CUSTOM.wmremove = (tool, ctx) => {
+  const box = h('div', { class: 'scan' }); ctx.extra.append(box); let scanned = null, cands = [];
+  const scan = () => ctx.run(async rc => {
+    const f = rc.files[0]; if (!f) throw new Error('Chưa chọn file PDF');
+    status('Đang quét…', 0.3); const s = await PS.scanWatermarks(f.bytes, rc.pw); scanned = f; cands = s.candidates;
+    box.innerHTML = '';
+    box.append(h('p', {}, `${s.pages} trang · watermark gắn nhãn chuẩn: ${s.tagged} · lớp Watermark: ${s.layers} · chú thích Watermark: ${s.annots}`));
+    if (cands.length) {
+      box.append(h('p', { class: 'hint' }, 'Ảnh/đối tượng lặp ở nhiều trang (có thể là watermark hoặc logo) — tick để xóa:'));
+      cands.forEach(c => { const ck = h('input', { type: 'checkbox' }); c.ck = ck; box.append(h('label', { class: 'chk' }, ck, `${c.type === 'Image' ? 'Ảnh' : 'Form'} ${c.w ? c.w + '×' + c.h : ''} — xuất hiện ở ${c.pages}/${s.pages} trang`)); });
+    } else box.append(h('p', { class: 'hint' }, 'Không thấy ảnh/đối tượng lặp. Nếu watermark là chữ, nhập nội dung chữ ở trên rồi bấm Xóa.'));
+    if (!s.tagged && !s.layers && !s.annots && !cands.length) rc.note('Không phát hiện watermark theo cách chuẩn. Có thể thử nhập chữ watermark để xóa theo nội dung.');
+  });
+  const go = () => ctx.run(async rc => rc.each(async f => {
+    const o = rc.o; let xobjs = f === scanned ? cands.filter(c => c.ck && c.ck.checked).map(c => c.id) : [];
+    if (o.auto) { const s = await PS.scanWatermarks(f.bytes, rc.pw); xobjs = xobjs.concat(s.candidates.map(c => c.id)); }
+    const r = await PS.removeWatermarks(f.bytes, { pw: rc.pw, marked: o.marked, annots: o.annots, text: o.text, xobjs, pages: o.pages }), st = r.stat, total = st.marked + st.text + st.xobj + st.annots;
+    if (!total) throw new Error('Không tìm thấy watermark phù hợp (có thể đã nằm trong ảnh nền hoặc font mã hóa nên không khớp chữ). Hãy quét và chọn ảnh lặp, hoặc nhập đúng chữ watermark.');
+    rc.add(PS.stem(f.name) + '_xoawm.pdf', r.bytes, 'application/pdf', `đã gỡ: ${st.marked} nhãn chuẩn, ${st.text} khối chữ, ${st.xobj} ảnh/đối tượng, ${st.annots} chú thích`);
+  }));
+  ctx.bar.append(h('button', { class: 'sec', onclick: scan }, 'Quét watermark (file đầu tiên)'), h('button', { class: 'act', onclick: go }, 'Xóa watermark'));
+};
+})();
+
+document.addEventListener('DOMContentLoaded', function () { PS.startUI(); });
+</script>
+</body>
+</html>
